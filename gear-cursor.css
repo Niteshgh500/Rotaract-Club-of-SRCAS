@@ -1,0 +1,128 @@
+/* ============================================================
+   Rotaract Gear Cursor + Page Transition
+   Shared by every page — do not rename this file or the two
+   files it works with (gear-cursor.js, assets/gear-cursor-logo.png)
+   without updating the <link>/<script> tags in every HTML file.
+   ============================================================ */
+
+/* Hide the native cursor site-wide once the custom one is active
+   (only applied on devices with a real mouse — see JS) */
+body.gear-cursor-active,
+body.gear-cursor-active * {
+  cursor: none !important;
+}
+
+/* ---------- Rotating cursor ---------- */
+.gear-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  pointer-events: none;
+  z-index: 999997;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  will-change: transform;
+}
+.gear-cursor-scale {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.18s cubic-bezier(.34,1.56,.64,1);
+}
+.gear-cursor.gear-cursor-click .gear-cursor-scale {
+  transform: scale(0.68);
+}
+.gear-cursor-spin {
+  width: 100%;
+  height: 100%;
+  display: block;
+  animation: gear-spin 3s linear infinite;
+  filter: drop-shadow(0 0 7px rgba(240, 199, 94, 0.65));
+}
+.gear-cursor.gear-cursor-click .gear-cursor-spin {
+  animation-duration: 0.5s;
+}
+@keyframes gear-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Click burst animation ---------- */
+.gear-burst-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 999996;
+}
+.gear-burst-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border: 2px solid var(--violet-bright, #f0c75e);
+  border-radius: 50%;
+  animation: gear-ring 0.6s ease-out forwards;
+}
+@keyframes gear-ring {
+  0%   { width: 14px; height: 14px; margin: -7px 0 0 -7px; opacity: 0.9; }
+  100% { width: 70px; height: 70px; margin: -35px 0 0 -35px; opacity: 0; }
+}
+.gear-burst-particle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: var(--violet-bright, #f0c75e);
+  border-radius: 50%;
+  opacity: 0.95;
+  animation: gear-particle 0.6s cubic-bezier(.2,.8,.3,1) forwards;
+}
+@keyframes gear-particle {
+  to { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+}
+
+/* ---------- Page transition overlay ---------- */
+#gear-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: var(--black, #0d0618);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+}
+#gear-transition-overlay.gear-reveal {
+  opacity: 0;
+}
+#gear-transition-overlay.gear-hidden {
+  display: none;
+}
+#gear-transition-overlay.gear-cover {
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: all;
+}
+.gear-transition-icon {
+  width: 84px;
+  height: 84px;
+  animation: gear-spin-fast 0.85s linear infinite;
+  filter: drop-shadow(0 0 16px rgba(240, 199, 94, 0.6));
+  transform: scale(0.85);
+  transition: transform 0.45s cubic-bezier(.34,1.56,.64,1);
+}
+#gear-transition-overlay.gear-cover .gear-transition-icon {
+  transform: scale(1);
+}
+@keyframes gear-spin-fast {
+  to { transform: rotate(360deg); }
+}
