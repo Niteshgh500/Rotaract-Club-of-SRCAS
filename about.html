@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>About Us — Rotaract Club of SRCAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #0d0618;
+    --ink: #1c0f2e;
+    --violet-deep: #2f1b4d;
+    --violet-mid: #5b3a8f;
+    --violet-accent: #c9a227;
+    --violet-bright: #f0c75e;
+    --lilac: #e3d1fa;
+    --paper: #f7f1e3;
+    --gear-line: rgba(240,199,94,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--black);
+    color: var(--paper);
+    font-family: 'EB Garamond', sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{ font-family:'Playfair Display', serif; font-weight:600; letter-spacing:-0.01em; }
+  .eyebrow{ font-family:'Jost', sans-serif; text-transform:uppercase; letter-spacing:0.28em; font-size:0.72rem; color:var(--violet-bright); }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:'Jost', sans-serif; cursor:pointer; border:none;}
+
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(201,162,39,0.16), transparent 40%),
+      radial-gradient(circle at 85% 75%, rgba(201,162,39,0.12), transparent 45%),
+      linear-gradient(180deg, #0d0618 0%, #1c0f2e 100%);
+    z-index:-2;
+  }
+
+  /* NAV */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 1.1rem 5%;
+    background: rgba(13,6,24,0.72);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gear-line);
+  }
+  .brand{display:flex; align-items:center; gap:0.6rem; font-family:'Jost'; font-weight:700; letter-spacing:0.02em;}
+  .brand .gear{width:34px; height:34px; animation: spin 12s linear infinite;}
+  .brand .logo-img{height:48px; width:auto; display:block; border-radius:4px;}
+  .brand .brand-text{font-family:'Jost',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.02em; color:var(--paper); line-height:1.15;}
+  @media (max-width:640px){ .brand .brand-text{font-size:0.78rem;} }
+  nav ul{list-style:none; display:flex; gap:2rem; font-size:0.85rem; font-family:'Jost';}
+  nav ul a:hover{color:var(--violet-bright);}
+  @keyframes spin{ to{ transform: rotate(360deg);} }
+
+  section{padding: 6rem 5%; position:relative;}
+  .section-head{max-width:640px; margin-bottom:2.6rem;}
+  .section-head h2{font-size:clamp(1.9rem,4vw,2.8rem); margin-top:0.6rem; color:var(--paper);}
+  .section-head p{color:#b8aad4; margin-top:0.8rem; line-height:1.6;}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:0.5rem;
+    padding: 0.9rem 1.7rem; border-radius:999px;
+    font-size:0.85rem; font-weight:600; letter-spacing:0.02em;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+  .btn-solid{background: linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#fff;}
+  .btn-solid:hover{transform:translateY(-2px);}
+  .btn-outline{border:1px solid var(--violet-bright); color:var(--violet-bright); background:transparent;}
+  .btn-outline:hover{background:rgba(201,162,39,0.12); transform:translateY(-2px);}
+
+  /* ===== GROUP PHOTO BANNER (top of page) ===== */
+  .about-hero{ position:relative; height:70vh; min-height:420px; }
+  .about-hero img{ width:100%; height:100%; object-fit:cover; filter:grayscale(10%) contrast(1.05); }
+  .about-hero .overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(13,6,24,0.25) 0%, rgba(13,6,24,0.55) 65%, var(--black) 100%);
+    display:flex; align-items:flex-end; padding:3rem 5%;
+  }
+  .about-hero .overlay h1{ font-size:clamp(2.2rem,5vw,3.6rem); }
+
+  /* ===== AWARDS / PRIZES — auto-scrolling row ===== */
+  .awards-track-wrap{ overflow:hidden; padding: 0.5rem 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+  .awards-track{ display:flex; gap:1.6rem; width:max-content; animation: scrollAwards 30s linear infinite; }
+  .awards-track:hover{ animation-play-state: paused; }
+  @keyframes scrollAwards{ 0%{ transform:translateX(0);} 100%{ transform:translateX(-50%);} }
+  .award-card{
+    flex:0 0 auto; width:190px; text-align:center; cursor:pointer;
+    border:1px solid var(--gear-line); border-radius:16px; padding:1.2rem 1rem;
+    background: rgba(47,27,77,0.35); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .award-card:hover{ transform:translateY(-6px); border-color:var(--violet-bright); }
+  .award-card img{ width:78px; height:78px; object-fit:contain; margin:0 auto 0.9rem; }
+  .award-card b{ font-family:'Jost'; font-size:0.88rem; display:block; line-height:1.35; }
+  .award-card small{ color:var(--violet-bright); font-size:0.72rem; }
+
+  /* ===== MISSION / VISION / IMPACT / VALUES ===== */
+  .value-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.4rem; }
+  .value-card{
+    border:1px solid var(--gear-line); border-radius:20px; padding:2rem 1.5rem;
+    background: rgba(47,27,77,0.3); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
+  .value-card .eyebrow{ display:block; margin-bottom:0.7rem; }
+  .value-card h3{ font-size:1.15rem; color:var(--paper); margin-bottom:0.6rem; }
+  .value-card p{ color:#c6b9e6; font-size:0.9rem; line-height:1.65; }
+  .join-cta{ text-align:center; margin-top:2.8rem; }
+
+  hr.divider{ border:none; border-top:1px solid var(--gear-line); margin: 0 5%; }
+
+  /* ===== LOCATION (extra breathing room + motto) ===== */
+  .location-section{ padding: 8rem 5%; text-align:center; }
+  .location-section .eyebrow{ display:block; margin-bottom:1rem; }
+  .location-section h2{ font-size:clamp(1.9rem,4vw,2.6rem); }
+  .location-section .addr{ margin-top:1.4rem; color:#c6b9e6; font-size:1rem; line-height:1.8; }
+  .motto{
+    margin-top:3rem;
+    font-family:'Playfair Display', serif; font-style:italic;
+    font-size:clamp(1.3rem,3.2vw,1.9rem);
+    color:var(--violet-bright);
+    max-width:700px; margin-left:auto; margin-right:auto;
+  }
+  .map-embed{ margin-top:3rem; border-radius:18px; overflow:hidden; border:1px solid var(--gear-line); max-width:800px; margin-left:auto; margin-right:auto; }
+  .map-embed iframe{ width:100%; height:320px; border:0; filter:grayscale(35%) invert(92%) contrast(90%); }
+
+  /* ===== FOOTER ===== */
+  footer{ padding: 4rem 5% 2.4rem; border-top:1px solid var(--gear-line); background: rgba(23,17,6,0.55); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  .footer-box{
+    border:1px solid var(--gear-line); border-radius:20px; padding:2.4rem;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; align-items:center;
+    margin-bottom:2.4rem;
+  }
+  .footer-box h3{ color:var(--violet-bright); font-size:1.3rem; }
+  .footer-box .contact-line{ margin-top:0.5rem; color:#c6b9e6; font-size:0.92rem; }
+  .social-icons{ display:flex; gap:1rem; justify-content:flex-end; }
+  .social-icons a{
+    width:46px; height:46px; border-radius:50%;
+    border:1px solid var(--gear-line);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+  .social-icons a:hover{ transform:translateY(-3px); background:rgba(201,162,39,0.15); border-color:var(--violet-bright); }
+  .social-icons svg{ width:20px; height:20px; fill:var(--lilac); }
+  .foot-bottom{ text-align:center; color:#6f5f92; font-size:0.8rem; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(13,6,24,0.82); backdrop-filter:blur(4px); display:none; align-items:center; justify-content:center; z-index:200; padding:2rem; }
+  .modal-overlay.active{ display:flex; }
+  .modal-box{
+    background: linear-gradient(160deg, var(--violet-deep), var(--ink));
+    border:1px solid var(--gear-line); border-radius:22px;
+    max-width:640px; width:100%; padding:2.2rem; position:relative;
+    max-height:88vh; overflow-y:auto;
+   backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);}
+  .modal-box img{ width:100%; max-height:60vh; object-fit:contain; margin-bottom:1rem; border-radius:12px; background:rgba(0,0,0,0.15); }
+  .modal-close{ position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px; border-radius:50%; background:rgba(201,162,39,0.15); color:var(--violet-bright); display:flex; align-items:center; justify-content:center; font-size:1.1rem; cursor:pointer; }
+  .modal-box h3{ color:var(--paper); font-size:1.25rem; }
+  .modal-box .meta{ color:var(--violet-bright); font-size:0.82rem; font-family:'Jost'; margin:0.4rem 0 1rem; }
+  .modal-box p{ color:#c6b9e6; line-height:1.7; font-size:0.92rem; }
+
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:5px; }
+  .nav-toggle span{ display:block; width:24px; height:2px; background:var(--paper); border-radius:2px; }
+
+  @media (max-width: 860px){
+    .nav-toggle{ display:flex; }
+    nav ul{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:rgba(13,6,24,0.97);
+      border-bottom:1px solid var(--gear-line); padding:0.5rem 0;
+    }
+    nav ul.open{ display:flex; }
+    nav ul li{ padding:0.9rem 5%; border-top:1px solid var(--gear-line); }
+    nav ul li:first-child{ border-top:none; }
+    .value-grid{ grid-template-columns:1fr 1fr; }
+    .footer-box{ grid-template-columns:1fr; }
+    .social-icons{ justify-content:flex-start; }
+  }
+  @media (max-width: 560px){
+    .value-grid{ grid-template-columns:1fr; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<!-- ================================================================
+     NAV — same as the home page. "Home" sends people back to
+     index.html. Edit links only if you rename pages/sections.
+================================================================= -->
+<!-- ================================================================
+     NAV — logo only (no text), same behaviour as the home page:
+     click it to go to the Home page.
+================================================================= -->
+<nav>
+  <div class="brand" onclick="window.location.href='index.html'" title="Go to Home" style="cursor:pointer;">
+    <img class="logo-img" src="assets/srcas-logo.png" alt="Rotaract Club of Sri Ramakrishna College of Arts and Science">
+    <span class="brand-text">Rotaract Club of SRCAS</span>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="join.html">Join</a></li>
+  </ul>
+</nav>
+
+<!-- ================================================================
+     GROUP PHOTO BANNER (first thing on this page)
+     👉 PIC: replace src="..." with your club's real group photo
+     👉 CONTENT: heading text below it
+================================================================= -->
+<div class="about-hero">
+  <!-- PIC: main About Us banner photo -->
+  <img src="group/reawaken-about.jpg" alt="Rotaract Club of SRCAS members at the Reawaken 34th Installation Ceremony">
+  <div class="overlay">
+    <h1><!-- CONTENT: page heading -->About Us</h1>
+  </div>
+</div>
+
+<!-- ================================================================
+     AWARDS / PRIZES — auto-scrolling strip, in a straight line.
+     👉 PIC + CONTENT: built by JavaScript — search for
+        "const awards = [ ... ]" near the bottom of the page to add,
+        edit, or remove awards (photo, name, year, place, reason).
+     Tap any award to see when/where it was won and why.
+================================================================= -->
+<section id="awards">
+  <div class="section-head">
+    <span class="eyebrow">Recognition</span>
+    <h2>Our Prizes &amp; Awards</h2>
+    <p>Tap any award to see when we won it, where, and why.</p>
+  </div>
+  <div class="awards-track-wrap">
+    <div class="awards-track" id="awards-track"></div>
+  </div>
+</section>
+
+<!-- ================================================================
+     MISSION / VISION / IMPACT / CORE VALUES
+     👉 CONTENT: 4 short paragraphs below — one per card
+================================================================= -->
+<section id="values">
+  <div class="section-head">
+    <span class="eyebrow">What drives us</span>
+    <h2>Mission, Vision, Impact &amp; Values</h2>
+  </div>
+  <div class="value-grid">
+    <div class="value-card">
+      <span class="eyebrow">01</span>
+      <h3>Our Mission</h3>
+      <!-- CONTENT: mission statement -->
+      <p>To develop young leaders through hands-on community service, professional growth, and international fellowship.</p>
+    </div>
+    <div class="value-card">
+      <span class="eyebrow">02</span>
+      <h3>Our Vision</h3>
+      <!-- CONTENT: vision statement -->
+      <p>A generation of young adults who see service not as an occasional act, but as a lifelong habit.</p>
+    </div>
+    <div class="value-card">
+      <span class="eyebrow">03</span>
+      <h3>Our Impact</h3>
+      <!-- CONTENT: impact statement -->
+      <p>Thousands of hours served, hundreds of families supported, and a growing network of members carrying it forward.</p>
+    </div>
+    <div class="value-card">
+      <span class="eyebrow">04</span>
+      <h3>Core Values</h3>
+      <!-- CONTENT: core values statement -->
+      <p>Fellowship, integrity, diversity, service, and leadership — in that order of how we practice them daily.</p>
+    </div>
+  </div>
+  <div class="join-cta">
+    <a href="index.html#join" class="btn btn-solid">Join Us</a>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================================
+     LOCATION (extra spacing + motto + optional map)
+     👉 CONTENT: address lines and the italic motto line
+     👉 OPTIONAL: replace the Google Maps embed link below with your
+        real location — go to Google Maps, search your address,
+        click Share → Embed a map, and paste the src link here.
+================================================================= -->
+<section class="location-section" id="location">
+  <span class="eyebrow">Find us</span>
+  <h2>Where We Meet</h2>
+  <div class="addr">
+    <!-- CONTENT: meeting address -->
+    Fun Mall & Lakshmi Mills, Bus Stop, Avinashi Road, Between, Nava India Rd, Peelamedu, Tamil Nadu 641006
+  </div>
+  <!-- CONTENT: motto line -->
+  <p class="motto">"Wherever there's a need nearby, that's where you'll find us."</p>
+  <div class="map-embed">
+    <!-- PIC/MAP: replace with your own Google Maps embed src -->
+    <iframe src="https://maps.google.com/maps?q=Sri+Ramakrishna+College+of+Arts+%26+Science%2C+Fun+Mall+%26+Lakshmi+Mills%2C+Bus+Stop%2C+Avinashi+Road%2C+Between%2C+Nava+India+Rd%2C+Peelamedu%2C+Tamil+Nadu+641006&t=&z=16&ie=UTF8&iwloc=&output=embed" loading="lazy"></iframe>
+  </div>
+</section>
+
+<!-- ================================================================
+     FOOTER — club name, email, phone, and social icons.
+     👉 CONTENT: fill in the real handles AND replace href="#" on each
+        icon with the real profile link (e.g. https://instagram.com/yourclub)
+================================================================= -->
+<footer>
+  <div class="footer-box">
+    <div>
+      <h3>Rotaract Club of SRCAS</h3>
+      <!-- CONTENT: club email -->
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:racsrcas3206@gmail.com" style="color:inherit;text-decoration:none;">racsrcas3206@gmail.com</a></div>
+      <!-- CONTENT: club phone number -->
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.5 1 1 0 01-.25 1z"/></svg><a href="tel:+919942038045" style="color:inherit;text-decoration:none;">+91 99420 38045</a></div>
+    </div>
+    <div class="social-icons">
+      <!-- CONTENT: put your real Instagram link in href -->
+      <a href="https://www.instagram.com/rotaractsrcas/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>
+      </a>
+      <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+      </a>
+      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78L17.75 3zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45z"/></svg>
+      </a>
+    </div>
+  </div>
+  <p class="foot-bottom">© 2026 Rotaract Club of SRCAS. Service Above Self.</p>
+</footer>
+
+<!-- Award detail pop-up -->
+<div class="modal-overlay" id="award-modal">
+  <div class="modal-box" id="award-modal-content"></div>
+</div>
+
+<script>
+  // Mobile hamburger menu
+  function toggleNav(){ document.getElementById('nav-links').classList.toggle('open'); }
+  document.querySelectorAll('#nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> document.getElementById('nav-links').classList.remove('open'));
+  });
+
+  // ================================================================
+  // 👉 AWARDS / PRIZES DATA — one { } block per award.
+  //    img   = PIC (award/trophy image)
+  //    name  = award name shown in the scrolling strip
+  //    year, place, reason = CONTENT shown when it's clicked
+  //    TO ADD A NEW POSTER: copy one whole {name: ... } line below,
+  //    paste it as a new line, edit it, and add a comma after the
+  //    line above it. TO REMOVE ONE: delete its whole line.
+  // ================================================================
+  const awards = [
+    {name:"AURA – Highest Registered Club & The People Behind the Moment", img:"trophy/aura-district-fellowship.jpg", year:"2026–2027", place:"AURA Rotaract District Fellowship, hosted by Rotaract Clubs of Coimbatore Crystals & PSG CAS", reason:"Pair of AURA standees awarded to the Rotaract Club of SRCAS as the Highest Registered Club – Campus Based (\"Together, You Owned the Room.\") and for The People Behind the Moment (\"We made it. You made it better!\")."},
+    {name:"Best Implementation of Blood Donor Initiative", img:"trophy/blood-donor-initiative.jpg", year:"", place:"Rotary & Rotaract", reason:"Blood-drop acrylic trophy with a wooden base presented to the Rotaract Club of Sri Ramakrishna Arts and Science College for the Best Implementation of the Blood Donor Initiative."},
+    {name:"Best Supporting Staff Coordinator", img:"trophy/best-supporting-staff-coordinator.jpg", year:"", place:"Rotary & Rotaract", reason:"Blue and gold star acrylic trophy with a wooden base honouring the club's staff coordinators at Sri Ramakrishna College of Arts and Science as Best Supporting Staff Coordinator."},
+    {name:"Venue Support – Thank You For Your Support", img:"trophy/venue-support.jpg", year:"", place:"Rotary & Rotaract", reason:"Lotus-in-hands acrylic trophy with a wooden base thanking SRCAS for providing venue support, received by the Faculty Rotaract Representative."},
+    {name:"Neeya Naana 2.0", img:"trophy/2021-22.png", year:"2021–2022", place:"Rotaract District Organisation 3201", reason:"Red raised-fist circular emblem trophy awarded by Rotaract District Organisation 3201 (DRR: Rtr. Keerthi Vivek, Awards Chair: Rtr. Arshad I.)."},
+    {name:"Utsav", img:"trophy/2022-23(1).jpg", year:"2022–2023", place:"Rotary's Seven Areas of Focus", reason:"Award recognizing contributions to infrastructure and basic education/literacy under Rotary's seven areas of focus."},
+    {name:"District Citation – Hyperactive Status", img:"trophy/2024-25(5).jpg", year:"2024–2025", place:"Rotaract District 3201", reason:"Framed citation conferring \"Hyperactive\" status to the Rotaract Club of SRCAS for exemplary \"service above self\"."},
+    {name:"Certificate of Appreciation", img:"trophy/2024-25(7).jpg", year:"2024–2025", place:"Rotaract District 3201", reason:"Framed certificate for organizing and conducting Five Impactful ID programs with excellence."},
+    {name:"ELEVATE – Maximum Registered Club", img:"trophy/C.jpg", year:"—", place:"XVI Rotaract District Conference", reason:"Award plaque for Maximum Registered Club – Campus Based at the XVI Rotaract District Conference."},
+    {name:"GOLD – Maximum Registered Club", img:"trophy/D.jpg", year:"—", place:"ROAR 3201", reason:"Pair of circular blue acrylic awards recognizing Maximum Registered – Campus Based under ROAR 3201."},
+    {name:"STARK – First Register Club", img:"trophy/2022-23 (2).jpg", year:"2022–2023", place:"RYLA", reason:"Wooden block award presented to SRCAS for being the First Register Club at RYLA."},
+    {name:"TAKE OFF – Maximum Registered Club", img:"trophy/20261st prizes.jpg", year:"2026-2027", place:"II DRR Installation & Leadership Seminar", reason:"Acrylic & wood plaque acknowledging Maximum Registered Campus Based Club support at the II DRR Installation & Leadership Seminar."},
+    {name:"3201 Thank You Plaque", img:"trophy/E.jpg", year:"—", place:"Rotaract District 3201", reason:"Red acrylic district map plaque stating \"Thank You for Upholding Us\" from DRR Rtr. PP. Satish Balakrishnan."},
+    {name:"Wayanad Flood Relief Recognition", img:"trophy/2024-25(4).jpg", year:"2024–2025", place:"Rotaract District 3201", reason:"District map-shaped memento awarded for contribution towards Wayanad Flood Relief efforts."},
+    {name:"RIDDLE 3.2.0.1", img:"trophy/A.png", year:"—", place:"Rotaract Inter District Dexterous League", reason:"Acrylic trophy with wooden base featuring a cricket silhouette, awarded to Rotaract Club of SRCAS by DRR Rtr. Sathish Balakrishnan and Event Chair Rtr. PP. Muskan Mehta."},
+    {name:"Rotaract District Fellowship – TANZANITE", img:"trophy/2024-25(8).png", year:"2024–2025", place:"ROAR 3201", reason:"Tall \"ROAR 3201\" acrylic trophy with wooden base presented to Rotaract Club of Sri Ramakrishna College of Arts and Science."},
+    {name:"Thank You For The Support Plaque", img:"trophy/2024-25.jpg", year:"2024–2025", place:"Rotaract District 3201", reason:"Wooden base trophy with striped acrylic back presented to Rotaract Club of Sri Ramakrishna College of Arts and Science by DRR Rtr. Thanghapantieyaan."},
+    {name:"Rotaract District Events – CELEBRATE", img:"trophy/2022-23(4).png", year:"2022–2023", place:"Rotaract District Events", reason:"Circular red plaque featuring group icon on a black pedestal base."},
+    {name:"DTWS Evolve & You Matter Awards", img:"trophy/B.png", year:"—", place:"District 3201 Rotaract", reason:"Pair of acrylic trophies awarded to Rotaract Club of SRCAS for hosting \"DTWS – Evolve\" and \"Best 30 Projects – You Matter\"."},
+    {name:"Celebrate Project of the Year – Adisil", img:"trophy/2022-23(2).png", year:"2022–2023", place:"Celebrate", reason:"Black pedestal trophy awarded to Rotaract Club of Sri Ramakrishna College of Arts and Science for project \"Adisil\"."},
+    {name:"Best Project HARMONY", img:"trophy/2020-21.png", year:"2020–2021", place:"Group 3", reason:"Wooden shield award presented for \"Best Project HARMONY\" to Rotaract Club of Sri Ramakrishna College of Arts & Science."},
+    {name:"ROTA LIBRARY", img:"trophy/2022-23(3).png", year:"2022–2023", place:"Rotaract District 3201", reason:"Circular award featuring an open book logo presented to Rotaract Club of Sri Ramakrishna College of Arts and Science."},
+    {name:"ROAR – Rotaract District Awards", img:"trophy/2024-25(6).jpg", year:"2024–2025", place:"Hosted by RC of Covai User Group & RC of Info Institute of Engineering", reason:"Pair of framed awards thanking Sri Ramakrishna College of Arts and Science for support."},
+    {name:"Best Project – NEXEL", img:"trophy/2024-25(3).jpg", year:"2024–2025", place:"Rotaract District 3201", reason:"Oval wooden-framed plaque presented to Rotaract Club of Sri Ramakrishna College of Arts & Science for \"Best Project NEXEL\"."},
+    {name:"Certificate of Organization", img:"trophy/1922.jpg", year:"1992 (replacement issued 2020)", place:"Coimbatore, Tamil Nadu", reason:"Framed official Rotary International Certificate of Organization recognizing the Rotaract Club of Sri Ramakrishna College of Arts and Science (Club ID 8249, Date of Organization: 9 October 1992), sponsored by the Rotary Club of Coimbatore Mid-Town."},
+    {name:"Supportive Faculty Co-ordinator", img:"trophy/2024-25(2).jpg", year:"2024–2025", place:"Rotaract District 3201", reason:"Acrylic cogwheel/gear trophy with a wooden base presented to Dr. M Sridhar (Rotaract Club of SRCAS) by District Rotaract Representative Rtr. Thanghapantieyaan and District Chair Awards Rtr. PP. Sabarinathan."},
+    {name:"Thank You For The Support", img:"trophy/2024-25(1).jpg", year:"2024–2025", place:"Rotaract District 3201", reason:"Semi-circular blue acrylic plate on a curved wooden base presented by Rtr. PP. Sabarinathan and Rtr. Thanghapantieyaan."},
+    {name:"Outstanding Professional Service & Best Public Relations", img:"trophy/2023-24(1).jpg", year:"2023–2024", place:"\"Endeavour to Elevate\" theme", reason:"Pair of wooden and dark blue acrylic trophies presented to Rotaract Club of Sri Ramakrishna College of Arts & Science under the \"Endeavour to Elevate\" theme."},
+    {name:"IRUTHI SUTTRU – Thank You For The Support", img:"trophy/2023-24.jpg", year:"2023–2024", place:"Rotaract District 3201", reason:"Wooden sloped trophy with red acrylic backing presented to Rotaract Club of Sri Ramakrishna College of Arts and Science by DRR Rtr. Sathish Balakrishnan."},
+    {name:"ALPHA – 100% Membership Registered", img:"trophy/2022-23.jpg", year:"2022–2023", place:"XV Rotaract District Conference", reason:"Black shield trophy with white lettering for the XV Rotaract District Conference \"ALPHA\" hosted by RC Coimbatore Texcity, JSS INYS & HICAS."},
+    {name:"ADI POLI – District Event Hosting Award", img:"trophy/2020-21.jpg", year:"2020–2021", place:"Group 3", reason:"Wooden trophy with an arrow-shaped top presented to Rotaract Club of SRCAS for hosting Rotaract District Trekking \"ADI POLI\" under Group 3."},
+    {name:"Outstanding Projects of the Year – Sexual Abuse Awareness", img:"trophy/2019-20(1).jpg", year:"2019–2020", place:"Rotaract District 3201", reason:"Black trophy with a wooden inlay and mountain top crest (\"RISE Above the Rest\") presented to Rotaract Club of Sri Ramakrishna College of Arts and Science."},
+    {name:"District Citation – Super Active Status", img:"trophy/2019-20.jpg", year:"2019–2020", place:"Rotaract District 3201", reason:"Framed certificate with an attached medal certifying Super Active status for Rotaract Club of Sri Ramakrishna College of Arts and Science."},
+    {name:"MERCI COPS – Group Forum Award", img:"trophy/2017-18.jpg", year:"2017–2018", place:"Group Forum", reason:"Gold-finished wooden plaque with a star emblem awarded for \"MERCI COPS\" to Rotaract Club of SNR Sons."},
+    {name:"BEST SUPPORTIVE CLUB – Treat Zonal Awards", img:"trophy/2015-16.jpg", year:"2015–2016", place:"Zone 2", reason:"Rectangular gold-plated wooden plaque awarded to Rotaract Club of SNR Sons College of Arts & Science under Zone 2."}
+  ];
+
+  const track = document.getElementById('awards-track');
+  // Render the list twice back-to-back so the scroll loop looks seamless
+  [...awards, ...awards].forEach((a, i)=>{
+    const card = document.createElement('div');
+    card.className = 'award-card';
+    card.onclick = ()=> showAward(i % awards.length);
+    card.innerHTML = `<img src="${a.img}" alt="${a.name}"><b>${a.name}</b><small>${a.year}</small>`;
+    track.appendChild(card);
+  });
+
+  function showAward(i){
+    const a = awards[i];
+    document.getElementById('award-modal-content').innerHTML = `
+      <div class="modal-close" onclick="closeAwardModal()">✕</div>
+      <img src="${a.img}" alt="${a.name}">
+      <h3>${a.name}</h3>
+      <div class="meta">${[a.year, a.place].filter(Boolean).join(' · ')}</div>
+      <p>${a.reason}</p>`;
+    document.getElementById('award-modal').classList.add('active');
+  }
+  function closeAwardModal(){ document.getElementById('award-modal').classList.remove('active'); }
+  document.getElementById('award-modal').addEventListener('click', e=>{
+    if(e.target.id === 'award-modal') closeAwardModal();
+  });
+
+  // 👉 CONTENT: club's real founding/charter year — keep this the
+  //    same as startYear in index.html so both pages agree
+  const startYear = 1975;
+</script>
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>

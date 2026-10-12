@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>Our Team — Rotaract Club of SRCAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #0d0618; --ink: #1c0f2e; --violet-deep: #2f1b4d; --violet-mid: #5b3a8f;
+    --violet-accent: #c9a227; --violet-bright: #f0c75e; --lilac: #e3d1fa; --paper: #f7f1e3;
+    --gear-line: rgba(240,199,94,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--black); color:var(--paper); font-family:'EB Garamond', sans-serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Playfair Display', serif; font-weight:600; letter-spacing:-0.01em; }
+  .eyebrow{ font-family:'Jost', sans-serif; text-transform:uppercase; letter-spacing:0.28em; font-size:0.72rem; color:var(--violet-bright); }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:'Jost', sans-serif; cursor:pointer; border:none;}
+  body::before{
+    content:""; position:fixed; inset:0;
+    background: radial-gradient(circle at 15% 20%, rgba(201,162,39,0.16), transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(201,162,39,0.12), transparent 45%),
+                linear-gradient(180deg, #0d0618 0%, #1c0f2e 100%);
+    z-index:-2;
+  }
+  nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+       padding:1.1rem 5%; background:rgba(13,6,24,0.72); backdrop-filter:blur(10px); border-bottom:1px solid var(--gear-line); }
+  .brand{display:flex; align-items:center; gap:0.6rem; cursor:pointer;}
+  .brand .gear{width:34px; height:34px; animation: spin 12s linear infinite;}
+  .brand .logo-img{height:48px; width:auto; display:block; border-radius:4px;}
+  .brand .brand-text{font-family:'Jost',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.02em; color:var(--paper); line-height:1.15;}
+  @media (max-width:640px){ .brand .brand-text{font-size:0.78rem;} }
+  nav ul{list-style:none; display:flex; gap:1.8rem; font-size:0.85rem; font-family:'Jost';}
+  nav ul a:hover{color:var(--violet-bright);}
+  @keyframes spin{ to{ transform: rotate(360deg);} }
+
+  section{padding: 5rem 5%; position:relative;}
+  .section-head{max-width:640px; margin-bottom:2rem;}
+  .section-head h2{font-size:clamp(1.9rem,4vw,2.7rem); margin-top:0.6rem;}
+  .section-head p{color:#b8aad4; margin-top:0.8rem; line-height:1.6;}
+
+  .page-header{ padding: 4rem 5% 1rem; }
+  .page-header h1{ font-size:clamp(2.2rem,5vw,3.4rem); }
+  .page-header p{ color:#b8aad4; margin-top:0.8rem; max-width:560px; }
+
+  .btn{ display:inline-flex; align-items:center; gap:0.5rem; padding:0.9rem 1.7rem; border-radius:999px;
+        font-size:0.85rem; font-weight:600; letter-spacing:0.02em; transition: transform 0.25s ease; }
+  .btn-solid{background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#fff;}
+  .btn-solid:hover{transform:translateY(-2px);}
+
+  /* ===== BOARD MEMBERS OF THE MONTH — spotlight ===== */
+  .spotlight-list{ display:grid; gap:1.6rem; }
+  .spotlight{
+    display:grid; grid-template-columns:220px 1fr; gap:2.4rem; align-items:center;
+    background: radial-gradient(circle at 20% 30%, rgba(201,162,39,0.18), transparent 60%);
+    border:1px solid var(--gear-line); border-radius:26px; padding:2.4rem;
+  }
+  .spotlight img{ border-radius:20px; aspect-ratio:1/1; object-fit:cover; border:1px solid var(--gear-line); }
+  .spotlight .month-tag{ display:inline-block; margin-bottom:0.8rem; }
+  .spotlight h2{ font-size:clamp(1.6rem,3.4vw,2.2rem); }
+  .spotlight .role{ color:var(--violet-bright); font-family:'Jost'; font-size:0.9rem; margin:0.3rem 0 0.9rem; }
+  .spotlight p{ color:#c6b9e6; line-height:1.7; font-size:0.95rem; }
+
+  /* ===== QUOTES ===== */
+  .quote-band{ text-align:center; padding:2.6rem 5%; }
+  .quote-band p{ font-family:'Playfair Display', serif; font-style:italic; font-size:clamp(1.15rem,2.6vw,1.55rem);
+                 color:var(--violet-bright); max-width:720px; margin:0 auto; }
+
+  /* ===== MEMBER GRID / CARD ===== */
+  .member-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(252px,252px)); gap:0.85rem; justify-content:center; }
+  .member-card{ border-radius:12px; overflow:hidden; border:1px solid var(--gear-line);
+                background:rgba(47,27,77,0.3); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+                box-shadow:0 4px 14px rgba(0,0,0,0.25); transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+  .member-card:hover{ transform:translateY(-4px); border-color:var(--violet-bright); box-shadow:0 8px 20px rgba(0,0,0,0.35); }
+  .member-photo{ width:252px; height:auto; aspect-ratio:1024/1535; object-fit:cover; cursor:pointer; }
+  .member-info{ padding:0.5rem 0.6rem 0.65rem; cursor:pointer; }
+  .member-info b{ font-family:'Jost'; font-size:0.72rem; line-height:1.25; display:block; }
+  .member-info small{ color:var(--violet-bright); font-size:0.6rem; display:block; margin-top:1px; }
+
+  /* portfolio subgroups within Board Members */
+  .portfolio-block{ margin-bottom:2.6rem; }
+  .portfolio-block:last-child{ margin-bottom:0; }
+  .portfolio-title{ font-family:'Jost'; font-size:1rem; color:var(--lilac);
+                     border-left:3px solid var(--violet-bright); padding-left:0.7rem; margin-bottom:0.5rem; }
+  .portfolio-quote{ font-family:'Playfair Display', serif; font-style:italic; font-size:0.9rem;
+                     color:var(--violet-bright); padding-left:0.7rem; margin-bottom:1.1rem; }
+
+  hr.divider{ border:none; border-top:1px solid var(--gear-line); margin: 0 5%; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(13,6,24,0.82); backdrop-filter:blur(4px);
+                  display:none; align-items:center; justify-content:center; z-index:200; padding:2rem; }
+  .modal-overlay.active{ display:flex; }
+  .modal-box{ background:linear-gradient(160deg, var(--violet-deep), var(--ink)); border:1px solid var(--gear-line);
+              border-radius:22px; max-width:440px; width:100%; padding:2.2rem; position:relative;
+              max-height:85vh; overflow-y:auto; text-align:center;  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);}
+  .modal-close{ position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px; border-radius:50%;
+                background:rgba(201,162,39,0.15); color:var(--violet-bright); display:flex; align-items:center;
+                justify-content:center; font-size:1.1rem; cursor:pointer; }
+  .modal-box h3{ font-size:1.25rem; }
+  .modal-box .meta{ color:var(--violet-bright); font-size:0.85rem; font-family:'Jost'; margin-top:0.3rem; }
+  .modal-photo-center{ width:100%; height:auto; max-height:70vh; object-fit:contain; border-radius:14px; margin:1.3rem auto;
+                        border:1px solid var(--gear-line); display:block; }
+
+  /* footer */
+  footer{ padding: 4rem 5% 2.4rem; border-top:1px solid var(--gear-line); background:rgba(23,17,6,0.55); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  .footer-box{ border:1px solid var(--gear-line); border-radius:20px; padding:2.4rem;
+               display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; align-items:center; margin-bottom:2.4rem; }
+  .footer-box h3{ color:var(--violet-bright); font-size:1.3rem; }
+  .footer-box .contact-line{ margin-top:0.5rem; color:#c6b9e6; font-size:0.92rem; }
+  .social-icons{ display:flex; gap:1rem; justify-content:flex-end; }
+  .social-icons a{ width:46px; height:46px; border-radius:50%; border:1px solid var(--gear-line);
+                    display:flex; align-items:center; justify-content:center;
+                    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease; }
+  .social-icons a:hover{ transform:translateY(-3px); background:rgba(201,162,39,0.15); border-color:var(--violet-bright); }
+  .social-icons svg{ width:20px; height:20px; fill:var(--lilac); }
+  .foot-bottom{ text-align:center; color:#6f5f92; font-size:0.8rem; }
+
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:5px; }
+  .nav-toggle span{ display:block; width:24px; height:2px; background:var(--paper); border-radius:2px; }
+
+  @media (max-width: 860px){
+    .nav-toggle{ display:flex; }
+    nav ul{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:rgba(13,6,24,0.97);
+      border-bottom:1px solid var(--gear-line); padding:0.5rem 0;
+    }
+    nav ul.open{ display:flex; }
+    nav ul li{ padding:0.9rem 5%; border-top:1px solid var(--gear-line); }
+    nav ul li:first-child{ border-top:none; }
+    .spotlight{ grid-template-columns:1fr; text-align:center; }
+    .spotlight img{ margin:0 auto; width:160px; }
+    .member-grid{ grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); }
+    .member-photo{ width:100%; height:auto; }
+    .footer-box{ grid-template-columns:1fr; }
+    .social-icons{ justify-content:flex-start; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<nav>
+  <div class="brand" onclick="window.location.href='index.html'" title="Go to Home" style="cursor:pointer;">
+    <img class="logo-img" src="assets/srcas-logo.png" alt="Rotaract Club of Sri Ramakrishna College of Arts and Science">
+    <span class="brand-text">Rotaract Club of SRCAS</span>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="join.html">Join</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="eyebrow">The people behind the projects</span>
+  <h1>Our Team</h1>
+  <p>From this month's standout to every committee member — tap any poster to meet them.</p>
+</div>
+
+<!-- ================================================================
+     BOARD MEMBERS OF THE MONTH (spotlight)
+     👉 PIC + CONTENT: search for "const spotlights = [ ... ]" in the
+        <script> below to change the photo, name, role, month, and blurb.
+================================================================= -->
+<section id="spotlight-section">
+  <div class="spotlight-list" id="spotlight-box"></div>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================================
+     CORE TEAM
+     👉 CONTENT: quote text below.
+     👉 PIC + CONTENT: search for "const coreTeam = [ ... ]" in the
+        <script> to edit each of the 5 posters, Instagram/LinkedIn
+        links, and bios.
+================================================================= -->
+<section id="core-team">
+  <div class="section-head">
+    <span class="eyebrow">Leading from the front</span>
+    <h2>Core Team</h2>
+  </div>
+  <div class="quote-band" style="padding-top:0; padding-bottom:2.2rem;">
+    <!-- CONTENT: core team quote -->
+    <p>"A team is not a group of people who work together. It's a group of people who trust each other."</p>
+  </div>
+  <div class="member-grid" id="core-team-grid"></div>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================================
+     BOARD MEMBERS (30, grouped by portfolio/committee)
+     👉 CONTENT: quote text below.
+     👉 PIC + CONTENT: search for "const boardMembers = { ... }" in
+        the <script> — it's grouped by portfolio name, each holding a
+        list of members. Add/remove a portfolio or a member freely.
+================================================================= -->
+<section id="board-members">
+  <div class="section-head">
+    <span class="eyebrow">Making it happen</span>
+    <h2>Board Members</h2>
+  </div>
+  <div class="quote-band" style="padding-top:0; padding-bottom:2.2rem;">
+    <!-- CONTENT: board members quote -->
+    <p>"Alone we can do so little; together we can do so much."</p>
+  </div>
+  <div id="board-members-groups"></div>
+</section>
+
+<hr class="divider">
+
+<!-- ================================================================
+     STAFF COORDINATORS
+     👉 CONTENT: quote text below.
+     👉 PIC + CONTENT: search for "const staffCoordinators = [ ... ]"
+        in the <script> to edit the 2 posters.
+================================================================= -->
+<section id="staff-coordinators">
+  <div class="section-head">
+    <span class="eyebrow">Our Rotary guides</span>
+    <h2>Faculty Coordinators</h2>
+  </div>
+  <div class="quote-band" style="padding-top:0; padding-bottom:2.2rem;">
+    <!-- CONTENT: staff coordinators quote -->
+    <p>"Behind every strong club is a mentor who believed in it first."</p>
+  </div>
+  <div class="member-grid" id="staff-grid"></div>
+</section>
+
+<!-- ================================================================
+     FOOTER
+================================================================= -->
+<footer>
+  <div class="footer-box">
+    <div>
+      <h3>Rotaract Club of SRCAS</h3>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:racsrcas3206@gmail.com" style="color:inherit;text-decoration:none;">racsrcas3206@gmail.com</a></div>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.5 1 1 0 01-.25 1z"/></svg><a href="tel:+919942038045" style="color:inherit;text-decoration:none;">+91 99420 38045</a></div>
+    </div>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/rotaractsrcas/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>
+      </a>
+      <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+      </a>
+      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78L17.75 3zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45z"/></svg>
+      </a>
+    </div>
+  </div>
+  <p class="foot-bottom">© 2026 Rotaract Club of SRCAS. Service Above Self.</p>
+</footer>
+
+<!-- Member detail pop-up: name/role at top, photo in the middle, bio + socials below -->
+<div class="modal-overlay" id="member-modal">
+  <div class="modal-box" id="member-modal-content"></div>
+</div>
+
+<script>
+  // Mobile hamburger menu
+  function toggleNav(){ document.getElementById('nav-links').classList.toggle('open'); }
+  document.querySelectorAll('#nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> document.getElementById('nav-links').classList.remove('open'));
+  });
+
+  const startYear = 1975;
+
+  // ================================================================
+  // Small reusable social icon markup
+  // ================================================================
+  const igIcon = `<svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>`;
+  const liIcon = `<svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>`;
+
+  // 👉 A small rotating pool of headshot-style photos used across the
+  //    board members grid, so you don't need 30 unique image links.
+  //    Replace any of these, or add more, freely.
+  const photoPool = [
+    "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&q=60",
+    "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=60",
+    "https://images.unsplash.com/photo-1568602471122-7832951cc4c5?w=400&q=60",
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=60",
+    "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=60",
+    "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&q=60",
+    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=60",
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=60",
+    "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=60",
+    "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=400&q=60"
+  ];
+
+  // ================================================================
+  // 👉 BOARD MEMBER OF THE MONTH — one photo, one story.
+  // ================================================================
+  // 👉 One { } block per award. To change next month, edit the
+  //    name / role / title / month / img / blurb fields below.
+  const spotlights = [
+    {title:"Outstanding Board Member", month:"August 2026",
+     name:"Rtr. Sai Pranesh V.K", role:"Blood Donor Cell",
+     img:"poster/Outstanding-Sai-Pranesh.jpg",
+     blurb:"Recognised as the Outstanding Board Member for August 2026 for his dedication and drive in leading the Blood Donor Cell."},
+    {title:"Supportive Board Member", month:"August 2026",
+     name:"Rtr. Gugan S", role:"Professional Service",
+     img:"poster/Supportive-Gugan.jpg",
+     blurb:"Recognised as the Supportive Board Member for August 2026 for always stepping up to back the team and the club's projects."}
+  ];
+  document.getElementById('spotlight-box').innerHTML = spotlights.map(sp => `
+    <div class="spotlight">
+      <img src="${sp.img}" alt="${sp.name}">
+      <div>
+        <span class="eyebrow month-tag">${sp.title} · ${sp.month}</span>
+        <h2>${sp.name}</h2>
+        <div class="role">${sp.role}</div>
+        <p>${sp.blurb}</p>
+      </div>
+    </div>`).join('');
+
+  // ================================================================
+  // 👉 CORE TEAM — 5 posters. linkedin = real profile URL.
+  //    TO ADD A NEW POSTER: copy one whole {name: ... } line below,
+  //    paste it as a new line, edit the fields, and put a comma after
+  //    the line above it. TO REMOVE ONE: delete its whole line (and
+  //    the trailing comma if it was the last one).
+  // ================================================================
+  const coreTeam = [
+    {name:"Rtr. Mohan Prabhu", role:"President", img:"poster/President.jpg", bio:"Final-year engineering student. Joined as a first-year and never left — now runs board meetings the way he once sat quietly in the back of them.", instagram:"https://instagram.com/", linkedin:"https://linkedin.com/"},
+    {name:"Rtr. Srihariharan", role:"Vice President", img:"poster/Vice-President.jpg", bio:"Assists the President in leading the club and oversees committee operations.", instagram:"https://instagram.com/", linkedin:"https://linkedin.com/"},
+    {name:"Rtr. Rithika", role:"Secretary Administration", img:"poster/Secretary-Administration.jpg", bio:"Maintains club records, meeting minutes, official documents, and administrative tasks.", instagram:"https://instagram.com/", linkedin:"https://linkedin.com/"},
+    {name:"Rtr. Shrinidhi", role:"Secretary Communication", img:"poster/Secretary-Communication.jpg", bio:"Handles internal and external communication, notices, and announcements.", instagram:"https://instagram.com/", linkedin:"https://linkedin.com/"}
+  ];
+
+  // ================================================================
+  // 👉 BOARD MEMBERS — 30 total, grouped by portfolio/committee.
+  //    TO ADD A NEW PORTFOLIO: add a new "Portfolio Name": [ ... ]
+  //    entry, following the same pattern as the ones below.
+  //    TO ADD A NEW POSTER within a portfolio: add a new
+  //    {name:"...", role:"..."} to that portfolio's list, with a
+  //    comma after the line above it.
+  //    TO REMOVE A POSTER: delete its {name, role} line.
+  //    Photos, Instagram/LinkedIn links, and bios for board members
+  //    are auto-generated below (see "withPhoto" further down) rather
+  //    than typed per-person — that keeps this list short to edit.
+  // ================================================================
+  const boardMembers = {
+    "All Avenue Chair": [
+      {name:"Rtr. Giya", role:"All Avenue Chair", img:"poster/All-Avenue-Chair.jpg"}
+    ],
+    "Treasurer": [
+      {name:"Rtr. Amirtha", role:"Treasurer", img:"poster/Treasurer.jpg"}
+    ],
+    "Joint Treasurer": [
+      {name:"Rtr. Sushimitha", role:"Joint Treasurer", img:"poster/Joint-Treasurer.jpg"}
+    ],
+    "Club Service": [
+      {name:"Rtr. Nikhita Murugesan", role:"Chair - Club Service", img:"poster/Club-Service-Chair.jpg"},
+      {name:"Rtr. Manoj", role:"Director - Club Service", img:"poster/Club-Service-Director.jpg"}
+    ],
+    "Community Service": [
+      {name:"Rtr. Negarigaa", role:"Director - Community Service", img:"poster/Community-Service-Director.jpg"},
+      {name:"Rtr. Akash", role:"Chair - Community Service", img:"poster/Community-Service-Chair.jpg"}
+    ],
+    "International Service": [
+      {name:"Rtr. Darshan", role:"Chair - International Service", img:"poster/International-Service-Chair.jpg"},
+      {name:"Rtr. Tamizhvanan", role:"Director - International Service", img:"poster/International-Service-Director.jpg"}
+    ],
+    "Professional Service": [
+      {name:"Rtr. Athulya", role:"Chair - Professional Service", img:"poster/Professional-Service-Chair.jpg"},
+      {name:"Rtr. Gugan", role:"Director - Professional Service", img:"poster/Professional-Service-Director.jpg"}
+    ],
+    "District Priority Project": [
+      {name:"Rtr. Ashwathi", role:"Chair - District Priority Project", img:"poster/DPP-Chair.jpg"},
+      {name:"Rtr. Madhumitha", role:"Director - District Priority Project", img:"poster/DPP-Director.jpg"}
+    ],
+    "Sergeant at Arms": [
+      {name:"Rtr. Gnelish Darshan", role:"Sergeant at Arms", img:"poster/Sergeant-at-Arms.jpg"}
+    ],
+    "Web Service": [
+      {name:"Rtr. Nitesh Kumar", role:"Web Service", img:"poster/Web-Service.jpg"}
+    ],
+    "Blood Donor Cell": [
+      {name:"Rtr. Sai Pranesh", role:"Chair - Blood Donor Cell", img:"poster/Blood-Donor-Cell-Chair.jpg"}
+    ],
+    "Content Writer": [
+      {name:"Rtr. Sree Harini", role:"Chair - Content Writer", img:"poster/Content-Writer-Chair.jpg"}
+    ],
+    "Content Creator": [
+      {name:"Rtr. Srivishnupriya", role:"Chair - Content Creator", img:"poster/Content-Creator-Chair.jpg"}
+    ],
+    "The Rotaract Foundation": [
+      {name:"Rtr. Meenakshi", role:"Director - The Rotary Foundation", img:"poster/Rotary-Foundation-Director.jpg"},
+      {name:"Rtr. Karthika", role:"Chair - The Rotary Foundation", img:"poster/Rotary-Foundation-Chair.jpg"}
+    ],
+    "Rotaract Learning Facilitation": [
+      {name:"Rtr. Rakshana Devi", role:"Chair - Rotaract Learning Facilitation", img:"poster/Rotaract-Learning-Facilitation-Chair.jpg"}
+    ],
+    "Rotary Rotaract Relation": [
+      {name:"Rtr. Dibin D'Cruz", role:"Chair - Rotary Rotaract Relation", img:"poster/Rotary-Rotaract-Relation-Chair.jpg"}
+    ],
+    "Club Advisor": [
+      {name:"Rtr. PP. Deepak", role:"Club Advisor", img:"poster/Club-Advisor-Deepak.jpg"},
+      {name:"Rtr. PP. Kartheepan", role:"Club Advisor", img:"poster/Club-Advisor-Kartheepan.jpg"}
+    ],
+    "Event Advisor": [
+      {name:"Rtr. Hashish Laa", role:"Event Advisor", img:"poster/Event-Advisor.jpg"}
+    ]
+  };
+
+  // 👉 STAFF COORDINATORS — 2 posters (sponsoring Rotary club advisors).
+  //    TO ADD A NEW POSTER: copy one whole {name: ... } line below,
+  //    edit it, and add a comma after the line above it.
+  const staffCoordinators = [
+    {name:"Dr. M. Karthika", role:"Faculty Coordinator", linkedin:"https://linkedin.com/",
+     img:"poster/Faculty-Coordinator-Karthika.jpg", bio:"Our main point of contact with the sponsoring Rotary club. Has guided three board transitions and counting."},
+    {name:"Mr. L. R. Siva Raman", role:"Faculty Coordinator", linkedin:"https://linkedin.com/",
+     img:"poster/Faculty-Coordinator-Siva-Raman.jpg", bio:"Steps in on project days, mentoring committee chairs through their first big events."}
+  ];
+
+  // ================================================================
+  // 👉 PORTFOLIO QUOTES — one line per portfolio/committee, shown
+  //    under that portfolio's title in the Board Members section.
+  //    TO EDIT: change the text for the matching portfolio key.
+  // ================================================================
+  const portfolioQuotes = {
+    "All Avenue Chair": "\"Every committee has its own rhythm — someone has to keep them all in step.\"",
+    "Treasurer": "\"A club runs on trust, and trust runs on an honest ledger.\"",
+    "Joint Treasurer": "\"Behind every approved budget is someone who double-checked it twice.\"",
+    "Club Service": "\"Strong clubs are built meeting by meeting, member by member.\"",
+    "Community Service": "\"We don't just serve the community — we listen to it first.\"",
+    "International Service": "\"Service has no borders, only the next place that needs a hand.\"",
+    "Professional Service": "\"Growth isn't just personal — it's something we build in each other.\"",
+    "District Priority Project": "\"Small local projects, tied together, become a district's legacy.\"",
+    "Sergeant at Arms": "\"Order isn't rigid — it's what lets everyone else focus on the work.\"",
+    "Web Service": "\"If it isn't online, half the club never hears about it.\"",
+    "Blood Donor Cell": "\"One donation, one drive, one life at a time.\"",
+    "Content Writer": "\"Every project deserves to be remembered in more than just photos.\"",
+    "Content Creator": "\"A good reel travels further than any pamphlet ever could.\"",
+    "The Rotaract Foundation": "\"Giving back is easier when giving forward is a habit.\"",
+    "Rotaract Learning Facilitation": "\"Recognition isn't the finish line — it's fuel for the next project.\"",
+    "Rotary Rotaract Relation": "\"We stand on what our Rotary club built — and build a little higher.\"",
+    "Club Advisor": "\"Every generation of the board leans on someone who's seen it all before.\""
+  };
+
+  // ================================================================
+  // 👉 MEMBER DESCRIPTIONS — shown when a member's card is clicked.
+  //    Matched by the exact name used above. TO EDIT: change the text
+  //    for that name (\n starts a new line).
+  // ================================================================
+  const memberBios = {
+    "Rtr. PP. Kartheepan": "We are proud to introduce Rtr. Kartheepan, our Club Advisor for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his guidance, support, and valuable experience, we look forward to building stronger initiatives, creating meaningful connections, and making a positive impact throughout the year. 🌟\nHere’s to a journey of leadership, learning, and service.\nWith RESURGENCE,\nTeam SRCAS",
+    "Rtr. PP. Deepak": "We are proud to introduce Rtr. PP. Deepak, our Club Advisor for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his guidance, support, and experience, we look forward to a year of meaningful initiatives, strong teamwork, and impactful service. 🌟 Together, we are ready to learn, lead, and create lasting memories throughout this journey. 🚀\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Mohan Prabhu": "We are proud to introduce Rtr. Mohan Prabhu, our President for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his vision, dedication, and leadership, we look forward to a year filled with meaningful initiatives, teamwork, and impactful service. 🌟 Together, let’s make this journey memorable and create a lasting difference. 🚀\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Rithika": "We are proud to introduce Rtr. Rithika , our Secretary – Administration for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her dedication, responsibility, and commitment, we look forward to smooth coordination, effective teamwork, and a successful year ahead. 🌟 Together, let’s lead with purpose and make every initiative count. 🚀\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Shrinidhi": "We are proud to introduce Rtr. Shrinidhi, our Secretary – Communication for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her creativity, dedication, and communication skills, we look forward to sharing our initiatives, connecting with our members, and making every moment count. 🌟 Together, let’s communicate, connect, and create a greater impact throughout the year. 🚀\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Srihariharan": "We are proud to introduce Rtr. Srihariharan, our Vice President for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his commitment, leadership, and enthusiasm, he will play an important role in supporting the team and turning ideas into meaningful action. 🌟\nTogether, we look forward to a successful and impactful year ahead. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Gnelish Darshan": "We are proud to introduce Rtr. Gnelish Darshan, our Sergeant at Arms for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his responsibility, discipline, and dedication, he will play an important role in maintaining order and supporting the smooth conduct of our meetings and activities. 🌟 Together, we look forward to a successful and impactful year ahead. 🚀\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Giya": "We are proud to introduce Rtr. Giya, our Chair – All Avenue for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her creativity, enthusiasm, and dedication, she will lead initiatives that bring people together and create meaningful experiences. 🌟 Her commitment will encourage active participation, strengthen connections, and make every avenue of Rotaract more engaging and impactful. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Amirtha": "We are proud to introduce Rtr. Amirtha, our Treasurer for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her responsibility, precision, and dedication, she will play an important role in managing the club’s financial activities. 🌟 Her commitment will ensure transparency, proper planning, and effective utilization of resources throughout the year. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Sushimitha": "We are proud to introduce Rtr. Sushimitha, our Joint Treasurer for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her responsibility, teamwork, and attention to detail, she will support the smooth management of the club’s financial activities. 🌟 Her dedication will contribute to proper coordination, transparency, and effective financial planning throughout the year. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Nitesh Kumar": "We are proud to introduce Rtr. Nitesh Kumar, our Director – Web Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his creativity, technical knowledge, and dedication, he will take charge of strengthening our club’s digital presence. 🌟 His efforts will help showcase our initiatives, activities, and achievements while keeping our online platforms active, engaging, and impactful. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Karthika": "We are proud to introduce Rtr. Karthika, our Chair – The Rotary Foundation for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her commitment, enthusiasm, and spirit of service, she will promote awareness about the Foundation and encourage members to actively support meaningful initiatives. 🌟 Her dedication will help strengthen our culture of giving, service, and positive impact throughout the year. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Meenakshi": "We are proud to introduce Rtr. Meenakshi, our Director – The Rotary Foundation for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her dedication and passion for service, she will create awareness about the Foundation and its initiatives. 🌟 Her efforts will inspire members to understand the value of service, support meaningful causes, and contribute towards making a lasting difference in society. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Nikhita Murugesan": "We are proud to introduce Rtr. Nikhita Murugesan, our Chair – Club Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her enthusiasm, teamwork, and dedication, she will focus on strengthening connections within the club and encouraging active participation. 🌟 Her efforts will help create a positive environment where members can connect, collaborate, and grow together throughout the year. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Manoj": "We are proud to introduce Rtr. Manoj, our Director – Club Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his enthusiasm, coordination, and dedication, he will support initiatives that strengthen teamwork and member engagement. 🌟 His contribution will help create a positive club environment, encourage active participation, and make every club experience more meaningful and memorable. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Akash": "We are proud to introduce Rtr. Akash, our Chair – Community Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his compassion, leadership, and commitment to service, he will lead initiatives that focus on community needs and meaningful change. 🌟 His dedication will inspire members to serve with purpose, work together, and create a positive impact in society. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Negarigaa": "We are proud to introduce Rtr. Negarigaa, our Director – Community Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her dedication, empathy, and spirit of service, she will support initiatives that address community needs and encourage meaningful participation. 🌟 Her efforts will strengthen our service activities and inspire members to work together towards creating a positive and lasting impact. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Athulya": "We are proud to introduce Rtr. Athulya, our Chair – Professional Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her dedication, creativity, and commitment to growth, she will lead initiatives that promote professional development and skill enhancement. 🌟 Her efforts will inspire members to learn, explore opportunities, and build valuable experiences that prepare them for a successful future. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Gugan": "We are proud to introduce Rtr. Gugan, our Director – Professional Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his enthusiasm, skills, and dedication, he will support initiatives that encourage professional learning and personal growth. 🌟 His contribution will help members gain practical exposure, discover new opportunities, and develop the confidence needed to step forward in their professional journey. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Darshan": "We are proud to introduce Rtr. Darshan, our Chair – International Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith a global perspective, enthusiasm, and dedication, he will lead initiatives that connect our club with the wider Rotaract community. 🌍 His efforts will encourage cultural exchange, international collaboration, and meaningful opportunities to connect, learn, and grow beyond boundaries. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Tamizhvanan": "We are proud to introduce Rtr. Tamizhvanan, our Director – International Service for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his enthusiasm, openness, and dedication, he will support initiatives that build international connections and encourage cultural exchange. 🌐 His efforts will help members discover new perspectives, connect with Rotaractors beyond borders, and create meaningful experiences through collaboration. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Dibin D'Cruz": "We are proud to introduce Rtr. Dibin D’Cruz, our Chair – Rotary Rotaract Relation Of Rotaract Club for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝🏻\nWith his communication, coordination, and dedication, he will strengthen the relationship between Rotary and Rotaract. 🌟 His efforts will encourage collaboration, shared learning, and meaningful engagement, creating stronger connections and greater opportunities for both communities. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Rakshana Devi": "We are proud to introduce Rtr. Rakshana Devi, our Chair – Rotaract Learning Facilitator for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her passion for learning and sharing knowledge, she will create opportunities that encourage members to learn, grow, and develop new skills. 🌟 Her dedication will foster an engaging learning environment and inspire members to make every learning experience meaningful. 🚀📚✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Ashwathi": "We are proud to introduce Rtr. Ashwathi, our Chair – District Priority Project for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her leadership, dedication, and commitment to service, she will take forward district-priority initiatives with purpose. 🌟 Her efforts will encourage teamwork, active participation, and impactful execution, turning every project into an opportunity to serve, inspire, and create meaningful change. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Madhumitha": "We are proud to introduce Rtr. Madhumitha, our Director – District Priority Project for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her commitment, coordination, and enthusiasm, she will support the successful execution of district-priority initiatives. 🌟 Her contribution will encourage members to participate actively, work as a team, and turn every project into a meaningful step towards positive change. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Srivishnupriya": "We are proud to introduce Rtr. Srivishnupriya, our Chair – Content Creator for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith creativity, passion, and a keen eye for storytelling, she will bring our club’s ideas, events, and achievements to life through impactful content. 📝 Her words will capture our journey, showcase our spirit, and connect our work with the community. 📸🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Sree Harini": "We are proud to introduce Rtr. Sree Harini, our Chair – Content Writer for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith creativity and a passion for words, she will transform ideas into engaging content and meaningful stories. ✨ Her writing will capture our club’s journey, highlight our initiatives, and bring our vision to life. 📝💫\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Sai Pranesh": "We are proud to introduce Rtr. Sai Pranesh, our Blood Donor for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith compassion and a spirit of service, he will support initiatives that promote awareness and encourage people to contribute to meaningful causes. ❤️ His commitment reflects the true spirit of helping others and creating a positive impact in the community. 🩸✨\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Rtr. Hashish Laa": "We are proud to introduce Rtr. Hashish, our Event Advisor for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith strong coordination and thoughtful guidance, he will help the team plan and execute engaging events successfully. ✨ His support and experience will strengthen teamwork, encourage creativity, and ensure every initiative is organised with purpose and impact. 📋💫\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Dr. M. Karthika": "We are delighted to introduce Dr. M. Karthika, our esteemed Faculty Coordinator for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her valuable guidance, constant encouragement, and ever-supportive nature, she inspires us to grow, lead, and serve with purpose. ✨ Her warm mentorship and unwavering support will be a strong pillar throughout our Rotaract journey. 🌸💫\nWith RESURGENCE,\nTeam SRCAS ❤️",
+    "Mr. L. R. Siva Raman": "We are delighted to introduce Mr. L. R. Siva Raman, our esteemed Faculty Coordinator for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his valuable guidance, constant encouragement, and ever-supportive nature, he inspires us to grow, lead, and serve with purpose. ✨ His mentorship and unwavering support will continue to strengthen our team and make our Rotaract journey more meaningful. 🌿💫\nWith RESURGENCE,\nTeam SRCAS ❤️"
+  };
+
+  // ================================================================
+  // RENDER HELPERS
+  // ================================================================
+  function memberCardHTML(m, key){
+    return `
+      <img class="member-photo" src="${m.img}" alt="${m.name}" onclick="showMemberModal('${key}')">
+      <div class="member-info" onclick="showMemberModal('${key}')"><b>${m.name}</b><small>${m.role}</small></div>`;
+  }
+
+  // registry so any card can be looked up by a simple string key when a modal opens
+  const memberRegistry = {};
+
+  const coreGrid = document.getElementById('core-team-grid');
+  coreTeam.forEach((m,i)=>{
+    const key = 'core-' + i;
+    memberRegistry[key] = m;
+    const card = document.createElement('div');
+    card.className = 'member-card';
+    card.innerHTML = memberCardHTML(m, key);
+    coreGrid.appendChild(card);
+  });
+
+  const boardGroupsWrap = document.getElementById('board-members-groups');
+  Object.keys(boardMembers).forEach((portfolio, pi)=>{
+    const block = document.createElement('div');
+    block.className = 'portfolio-block';
+    const grid = document.createElement('div');
+    grid.className = 'member-grid';
+    boardMembers[portfolio].forEach((m,i)=>{
+      const key = 'board-' + pi + '-' + i;
+      // give each board member a photo from the rotating pool + a short generic bio
+      const withPhoto = Object.assign({
+        img: photoPool[(pi + i) % photoPool.length],
+        linkedin: "https://linkedin.com/",
+        bio: `Member of the ${portfolio}, helping plan and run our projects in this area all year round.`
+      }, m);
+      memberRegistry[key] = withPhoto;
+      const card = document.createElement('div');
+      card.className = 'member-card';
+      card.innerHTML = memberCardHTML(withPhoto, key);
+      grid.appendChild(card);
+    });
+    const quote = portfolioQuotes[portfolio] ? `<p class="portfolio-quote">${portfolioQuotes[portfolio]}</p>` : '';
+    block.innerHTML = `<div class="portfolio-title">${portfolio}</div>${quote}`;
+    block.appendChild(grid);
+    boardGroupsWrap.appendChild(block);
+  });
+
+  const staffGrid = document.getElementById('staff-grid');
+  staffCoordinators.forEach((m,i)=>{
+    const key = 'staff-' + i;
+    memberRegistry[key] = m;
+    const card = document.createElement('div');
+    card.className = 'member-card';
+    card.innerHTML = memberCardHTML(m, key);
+    staffGrid.appendChild(card);
+  });
+
+  // ================================================================
+  // MODAL — name/role at top, photo in the middle, bio + socials below
+  // ================================================================
+  function showMemberModal(key){
+    const m = memberRegistry[key];
+    const bioText = memberBios[m.name] || m.bio;
+    const bio = bioText ? `<p style="color:#c6b9e6; line-height:1.7; margin-top:1rem; text-align:left; white-space:pre-line;">${bioText}</p>` : '';
+    document.getElementById('member-modal-content').innerHTML = `
+      <div class="modal-close" onclick="closeMemberModal()">✕</div>
+      <h3>${m.name}</h3>
+      <div class="meta">${m.role}</div>
+      <img class="modal-photo-center" src="${m.img}" alt="${m.name}">
+      ${bio}`;
+    document.getElementById('member-modal').classList.add('active');
+  }
+  function closeMemberModal(){ document.getElementById('member-modal').classList.remove('active'); }
+  document.getElementById('member-modal').addEventListener('click', e=>{
+    if(e.target.id === 'member-modal') closeMemberModal();
+  });
+</script>
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>

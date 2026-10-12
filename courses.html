@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>Courses — Rotaract Club of Coimbatore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #0d0618; --ink: #1c0f2e; --violet-deep: #2f1b4d; --violet-mid: #5b3a8f;
+    --violet-accent: #c9a227; --violet-bright: #f0c75e; --lilac: #e3d1fa; --paper: #f7f1e3;
+    --gear-line: rgba(240,199,94,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--black); color:var(--paper); font-family:'EB Garamond', sans-serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Playfair Display', serif; font-weight:600; letter-spacing:-0.01em; }
+  .eyebrow{ font-family:'Jost', sans-serif; text-transform:uppercase; letter-spacing:0.28em; font-size:0.72rem; color:var(--violet-bright); }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:'Jost', sans-serif; cursor:pointer; border:none;}
+  body::before{
+    content:""; position:fixed; inset:0;
+    background: radial-gradient(circle at 15% 20%, rgba(201,162,39,0.16), transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(201,162,39,0.12), transparent 45%),
+                linear-gradient(180deg, #0d0618 0%, #1c0f2e 100%);
+    z-index:-2;
+  }
+  nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+       padding:1.1rem 5%; background:rgba(13,6,24,0.72); backdrop-filter:blur(10px); border-bottom:1px solid var(--gear-line); }
+  .brand{display:flex; align-items:center; gap:0.6rem; cursor:pointer;}
+  .brand .gear{width:34px; height:34px; animation: spin 12s linear infinite;}
+  .brand .logo-img{height:48px; width:auto; display:block; border-radius:4px;}
+  nav ul{list-style:none; display:flex; gap:1.5rem; font-size:0.85rem; font-family:'Jost';}
+  nav ul a:hover{color:var(--violet-bright);}
+  @keyframes spin{ to{ transform: rotate(360deg);} }
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:5px; }
+  .nav-toggle span{ display:block; width:24px; height:2px; background:var(--paper); border-radius:2px; }
+
+  .page-header{ padding: 4rem 5% 1rem; }
+  .page-header h1{ font-size:clamp(2.2rem,5vw,3.4rem); }
+  .page-header p{ color:#b8aad4; margin-top:0.8rem; max-width:560px; }
+
+  section{ padding: 2.5rem 5% 6rem; }
+
+  .btn{ display:inline-flex; align-items:center; gap:0.5rem; padding:0.9rem 1.7rem; border-radius:999px;
+        font-size:0.85rem; font-weight:600; letter-spacing:0.02em; transition: transform 0.25s ease; }
+  .btn-solid{background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#fff;}
+  .btn-solid:hover{transform:translateY(-2px);}
+  .btn-outline{border:1px solid var(--violet-bright); color:var(--violet-bright); background:transparent;}
+  .btn-outline:hover{background:rgba(201,162,39,0.12); transform:translateY(-2px);}
+
+  /* ===== COURSE POSTER GRID ===== */
+  .courses-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1.5rem; }
+
+  /* ===== COMING SOON ===== */
+  .coming-soon{ text-align:center; padding:4rem 1rem; border:1px solid var(--gear-line); border-radius:24px;
+                background:radial-gradient(circle at 50% 20%, rgba(201,162,39,0.14), transparent 60%); }
+  .coming-soon h2{ font-size:clamp(2rem,4.5vw,3rem); margin-top:0.6rem; }
+  .coming-soon p{ color:#b8aad4; margin-top:0.9rem; max-width:480px; margin-left:auto; margin-right:auto; }
+  .course-card{
+    border-radius:18px; overflow:hidden; border:1px solid var(--gear-line); cursor:pointer;
+    position:relative; background:rgba(47,27,77,0.3); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .course-card:hover{ transform:translateY(-6px); border-color:var(--violet-bright); }
+  .course-card img{ width:100%; aspect-ratio:4/5; object-fit:cover; }
+  .price-badge{
+    position:absolute; top:0.7rem; right:0.7rem; padding:0.3rem 0.75rem; border-radius:999px;
+    font-family:'Jost'; font-size:0.68rem; font-weight:700; letter-spacing:0.03em; z-index:2;
+  }
+  .price-badge.free{ background:var(--violet-accent); color:#fff; }
+  .price-badge.paid{ background:rgba(13,6,24,0.75); color:var(--lilac); border:1px solid var(--gear-line); }
+  .course-info{ padding:1rem 1.1rem 1.2rem; }
+  .course-info b{ font-family:'Jost'; font-size:0.98rem; display:block; }
+  .course-info small{ color:var(--violet-bright); font-size:0.76rem; display:block; margin-top:0.3rem; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(13,6,24,0.82); backdrop-filter:blur(4px);
+                  display:none; align-items:center; justify-content:center; z-index:200; padding:2rem; }
+  .modal-overlay.active{ display:flex; }
+  .modal-box{ background:linear-gradient(160deg, var(--violet-deep), var(--ink)); border:1px solid var(--gear-line);
+              border-radius:22px; max-width:520px; width:100%; padding:2.2rem; position:relative;
+              max-height:85vh; overflow-y:auto;  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);}
+  .modal-box img{ border-radius:14px; margin-bottom:1rem; width:100%; aspect-ratio:16/9; object-fit:cover; }
+  .modal-close{ position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px; border-radius:50%;
+                background:rgba(201,162,39,0.15); color:var(--violet-bright); display:flex; align-items:center;
+                justify-content:center; font-size:1.1rem; cursor:pointer; }
+  .modal-box h3{ font-size:1.3rem; }
+  .modal-box .meta-row{ display:flex; gap:0.7rem; flex-wrap:wrap; margin:0.5rem 0 1.1rem; }
+  .modal-box .meta-chip{ border:1px solid var(--gear-line); border-radius:999px; padding:0.35rem 0.85rem;
+                          font-family:'Jost'; font-size:0.75rem; color:var(--violet-bright); }
+  .modal-box p{ color:#c6b9e6; line-height:1.7; font-size:0.92rem; }
+  .modal-box .whats-in-it{ font-family:'Jost'; font-size:0.78rem; color:var(--lilac);
+                            text-transform:uppercase; letter-spacing:0.08em; margin:1.2rem 0 0.6rem; }
+  .modal-box ul{ color:#c6b9e6; line-height:1.85; font-size:0.9rem; padding-left:1.2rem; }
+  .modal-box .form-btn{ margin-top:1.4rem; display:inline-flex; }
+
+  footer{ padding: 4rem 5% 2.4rem; border-top:1px solid var(--gear-line); background:rgba(23,17,6,0.55); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  .footer-box{ border:1px solid var(--gear-line); border-radius:20px; padding:2.4rem;
+               display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; align-items:center; margin-bottom:2.4rem; }
+  .footer-box h3{ color:var(--violet-bright); font-size:1.3rem; }
+  .footer-box .contact-line{ margin-top:0.5rem; color:#c6b9e6; font-size:0.92rem; }
+  .social-icons{ display:flex; gap:1rem; justify-content:flex-end; }
+  .social-icons a{ width:46px; height:46px; border-radius:50%; border:1px solid var(--gear-line);
+                    display:flex; align-items:center; justify-content:center;
+                    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease; }
+  .social-icons a:hover{ transform:translateY(-3px); background:rgba(201,162,39,0.15); border-color:var(--violet-bright); }
+  .social-icons svg{ width:20px; height:20px; fill:var(--lilac); }
+  .foot-bottom{ text-align:center; color:#6f5f92; font-size:0.8rem; }
+
+  @media (max-width: 860px){
+    .nav-toggle{ display:flex; }
+    nav ul{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:rgba(13,6,24,0.97);
+      border-bottom:1px solid var(--gear-line); padding:0.5rem 0;
+    }
+    nav ul.open{ display:flex; }
+    nav ul li{ padding:0.9rem 5%; border-top:1px solid var(--gear-line); }
+    nav ul li:first-child{ border-top:none; }
+    .footer-box{ grid-template-columns:1fr; }
+    .social-icons{ justify-content:flex-start; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<nav>
+  <div class="brand" onclick="window.location.href='index.html'" title="Go to Home" style="cursor:pointer;">
+    <img class="logo-img" src="assets/srcas-logo.png" alt="Rotaract Club of Sri Ramakrishna College of Arts and Science">
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="join.html">Join</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="eyebrow">Learn something new</span>
+  <h1>Courses &amp; Workshops</h1>
+  <p>Tap any poster to see what it covers, where it's held, whether it's free or paid, and what you'll walk away with.</p>
+</div>
+
+<!-- ================================================================
+     COURSE POSTERS
+     👉 PIC + CONTENT: this whole grid is built by JavaScript, not by
+        hand-writing HTML here. Scroll down to the <script> tag near
+        the bottom of the page and find "const courses = [ ... ]" —
+        that's the only place you need to edit. Each course has:
+          img      = PIC (the poster image)
+          price    = "Free" or a rupee amount like "₹499"
+          mode     = "Online" or "In-person"
+          location = where it's held (or the Zoom note)
+          desc     = what the course is about
+          youGet   = list of what they'll walk away with
+          formLink = the real registration form URL for the button
+        Nothing needs to change in this HTML section itself.
+================================================================= -->
+<section>
+  <span class="eyebrow">Paid (₹99)</span>
+  <h2 style="margin:0.4rem 0 1.6rem;">Hero-Level Earning, in Burger Price</h2>
+  <div class="courses-grid" id="courses-grid"></div>
+</section>
+
+<footer>
+  <div class="footer-box">
+    <div>
+      <h3>Rotaract Club of Coimbatore</h3>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:racsrcas3206@gmail.com" style="color:inherit;text-decoration:none;">racsrcas3206@gmail.com</a></div>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.5 1 1 0 01-.25 1z"/></svg><a href="tel:+919942038045" style="color:inherit;text-decoration:none;">+91 99420 38045</a></div>
+    </div>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/rotaractsrcas/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>
+      </a>
+      <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+      </a>
+      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78L17.75 3zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45z"/></svg>
+      </a>
+    </div>
+  </div>
+  <p class="foot-bottom">© 2026 Rotaract Club of Coimbatore. Service Above Self.</p>
+</footer>
+
+<!-- Course detail pop-up -->
+<div class="modal-overlay" id="course-modal">
+  <div class="modal-box" id="course-modal-content"></div>
+</div>
+
+<script>
+  // Mobile hamburger menu
+  function toggleNav(){ document.getElementById('nav-links').classList.toggle('open'); }
+  document.querySelectorAll('#nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> document.getElementById('nav-links').classList.remove('open'));
+  });
+
+  const startYear = 1975;
+
+  // ================================================================
+  // 👉 COURSES DATA — one { } block per course/workshop poster.
+  //    img         = PIC (poster image)
+  //    price       = "Free" or a rupee amount like "₹499"
+  //    mode        = "Online" or "In-person"
+  //    location    = where it's held (or "Zoom link shared after registration")
+  //    desc        = what the course is about
+  //    youGet      = list of what they'll get/learn
+  //    formLink    = your real registration form URL
+  //
+  //    TO ADD A NEW POSTER: copy one whole { ... } block below
+  //    (including the { and matching }), paste it as a new entry,
+  //    then edit its fields. Make sure there's a comma after every
+  //    block except the very last one.
+  //    TO REMOVE A POSTER: delete its whole { ... } block, and the
+  //    comma right after it (or before it, if it was the last one).
+  // ================================================================
+  const courses = [
+    {
+      name:"Canva Course", img:"https://images.unsplash.com/photo-1626785774573-4b799315345d?w=500&q=60",
+      price:"₹99", mode:"Online", location:"Live over Zoom (link shared after registration)",
+      desc:"A hands-on session on designing posters, social posts, and reels covers using Canva — no design background needed.",
+      youGet:["Live walkthrough of Canva's pro features", "A ready-to-reuse template pack", "Certificate of completion"],
+      formLink:"https://forms.gle/your-form-link-here"
+    },
+    {
+      name:"Claude Course", img:"https://images.unsplash.com/photo-1677442136019-21780ecad995?w=500&q=60",
+      price:"₹99", mode:"Online", location:"Live over Zoom (link shared after registration)",
+      desc:"Learn how to actually use Claude AI for studying, writing, and everyday tasks — prompting tricks, real use-cases, and common mistakes to avoid.",
+      youGet:["A cheat-sheet of prompts that work", "Live Q&A with real examples", "Certificate of completion"],
+      formLink:"https://forms.gle/your-form-link-here"
+    },
+    {
+      name:"Video Editing", img:"https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&q=60",
+      price:"₹99", mode:"Online", location:"Live over Zoom (link shared after registration)",
+      desc:"A beginner-friendly workshop on editing reels and short videos — cuts, transitions, captions, and music, taught on free mobile and desktop tools.",
+      youGet:["Step-by-step editing workflow", "Free tool recommendations", "Certificate of completion"],
+      formLink:"https://forms.gle/your-form-link-here"
+    }
+  ];
+
+  const coursesGrid = document.getElementById('courses-grid');
+  if (coursesGrid) {
+    courses.forEach((c,i)=>{
+      const isFree = c.price.toLowerCase() === 'free';
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      card.onclick = ()=> showCourseModal(i);
+      card.innerHTML = `
+        <span class="price-badge ${isFree ? 'free' : 'paid'}">${isFree ? 'Free' : c.price}</span>
+        <img src="${c.img}" alt="${c.name}">
+        <div class="course-info"><b>${c.name}</b><small>${c.mode}</small></div>`;
+      coursesGrid.appendChild(card);
+    });
+  }
+
+  function showCourseModal(i){
+    const c = courses[i];
+    const isFree = c.price.toLowerCase() === 'free';
+    document.getElementById('course-modal-content').innerHTML = `
+      <div class="modal-close" onclick="closeCourseModal()">✕</div>
+      <img src="${c.img}" alt="${c.name}">
+      <h3>${c.name}</h3>
+      <div class="meta-row">
+        <span class="meta-chip">${isFree ? 'Free' : c.price}</span>
+        <span class="meta-chip">${c.mode}</span>
+        <span class="meta-chip">${c.location}</span>
+      </div>
+      <p>${c.desc}</p>
+      <div class="whats-in-it">What you'll get</div>
+      <ul>${c.youGet.map(g => `<li>${g}</li>`).join('')}</ul>
+      <a href="${c.formLink}" target="_blank" rel="noopener" class="btn btn-solid form-btn">Register — Fill the Form</a>`;
+    document.getElementById('course-modal').classList.add('active');
+  }
+  function closeCourseModal(){ document.getElementById('course-modal').classList.remove('active'); }
+  document.getElementById('course-modal').addEventListener('click', e=>{
+    if(e.target.id === 'course-modal') closeCourseModal();
+  });
+</script>
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>

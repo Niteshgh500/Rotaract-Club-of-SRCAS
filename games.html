@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>Games — Rotaract Club of Coimbatore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #0d0618; --ink: #1c0f2e; --violet-deep: #2f1b4d; --violet-mid: #5b3a8f;
+    --violet-accent: #c9a227; --violet-bright: #f0c75e; --lilac: #e3d1fa; --paper: #f7f1e3;
+    --gear-line: rgba(240,199,94,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--black); color:var(--paper); font-family:'EB Garamond', serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Playfair Display', serif; font-weight:600; letter-spacing:-0.01em; }
+  .eyebrow{ font-family:'Jost', sans-serif; text-transform:uppercase; letter-spacing:0.28em; font-size:0.72rem; color:var(--violet-bright); }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:'Jost', sans-serif; cursor:pointer; border:none;}
+  body::before{
+    content:""; position:fixed; inset:0;
+    background: radial-gradient(circle at 15% 20%, rgba(201,162,39,0.16), transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(201,162,39,0.12), transparent 45%),
+                linear-gradient(180deg, #0d0618 0%, #1c0f2e 100%);
+    z-index:-2;
+  }
+  nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+       padding:1.1rem 5%; background:rgba(13,6,24,0.72); backdrop-filter: blur(20px); border-bottom:1px solid var(--gear-line); }
+  .brand{display:flex; align-items:center; gap:0.6rem; cursor:pointer;}
+  .brand .gear{width:34px; height:34px; animation: spin 12s linear infinite;}
+  .brand .logo-img{height:48px; width:auto; display:block; border-radius:4px;}
+  .brand .brand-text{font-family:'Jost',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.02em; color:var(--paper); line-height:1.15;}
+  @media (max-width:640px){ .brand .brand-text{font-size:0.78rem;} }
+  nav ul{list-style:none; display:flex; gap:1.4rem; font-size:0.85rem; font-family:'Jost', sans-serif;}
+  nav ul a:hover{color:var(--violet-bright);}
+  @keyframes spin{ to{ transform: rotate(360deg);} }
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:5px; }
+  .nav-toggle span{ display:block; width:24px; height:2px; background:var(--paper); border-radius:2px; }
+
+  .page-header{ padding: 4rem 5% 1rem; text-align:center; position:relative; }
+  .page-header h1{ font-size:clamp(2.2rem,5vw,3.4rem); }
+  .page-header p{ color:#c6b9e6; margin-top:0.8rem; max-width:560px; margin-left:auto; margin-right:auto; }
+  .back-home-btn{
+    position:fixed; top:16px; left:16px; z-index:60;
+    display:inline-flex; align-items:center; gap:6px;
+    border:1px solid var(--gear-line); border-radius:999px; padding:0.6rem 1.1rem;
+    font-family:'Jost'; font-size:0.82rem; font-weight:600; color:var(--violet-bright);
+    background:rgba(13,6,24,0.7); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .back-home-btn:hover{ background:rgba(201,162,39,0.18); border-color:var(--violet-bright); }
+  .back-home-btn svg{ width:14px; height:14px; }
+
+  section{ padding: 2.5rem 5% 6rem; }
+
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.9rem 1.7rem; border-radius:999px;
+        font-size:0.85rem; font-weight:600; letter-spacing:0.02em; transition: transform 0.25s ease; }
+  .btn-solid{background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#0d0618;}
+  .btn-solid:hover{transform:translateY(-2px);}
+  .btn-outline{border:1px solid var(--violet-bright); color:var(--violet-bright); background:transparent;}
+  .btn-outline:hover{background:rgba(201,162,39,0.14); transform:translateY(-2px);}
+
+  /* ===== AUTH GATE (shown until signed up / logged in) ===== */
+  .auth-wrap{ max-width:440px; margin:0 auto; }
+  .auth-tabs{ display:flex; gap:0.6rem; margin-bottom:1.6rem; justify-content:center; }
+  .auth-tab{ padding:0.6rem 1.4rem; border-radius:999px; border:1px solid var(--gear-line);
+             background:transparent; color:#c6b9e6; font-size:0.85rem; font-family:'Jost'; font-weight:600; }
+  .auth-tab.active{ background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#0d0618; border-color:transparent; }
+  .auth-card{
+    border:1px solid var(--gear-line); border-radius:22px; padding:2.2rem;
+    background: rgba(47,27,77,0.35); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+  }
+  .field{margin-bottom:1.1rem;}
+  .field label{display:block; font-size:0.78rem; font-family:'Jost'; color:#a993d6; margin-bottom:0.4rem; letter-spacing:0.03em;}
+  .field input{
+    width:100%; padding:0.8rem 1rem; border-radius:10px;
+    background:var(--black); border:1px solid var(--gear-line); color:var(--paper);
+    font-family:'EB Garamond'; font-size:1rem;
+  }
+  .auth-error{ color:#f0a45e; font-size:0.82rem; margin-top:-0.4rem; margin-bottom:1rem; display:none; }
+  .auth-error.show{ display:block; }
+  .auth-note{ font-size:0.78rem; color:#8b7bab; margin-top:1rem; text-align:center; }
+
+  /* ===== GAMES HUB (shown after login) ===== */
+  .games-hub{ display:none; }
+  .games-hub.show{ display:block; }
+  .welcome-row{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:2.4rem; }
+  .welcome-row h2{ font-size:1.7rem; }
+  .logout-link{ font-family:'Jost'; font-size:0.82rem; color:var(--violet-bright); border:1px solid var(--gear-line); padding:0.55rem 1.1rem; border-radius:999px; }
+  .logout-link:hover{ background:rgba(201,162,39,0.14); }
+
+  .games-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1.6rem; }
+
+  /* ===== LEADERBOARD ===== */
+  .leaderboard-section{ margin-top:4rem; }
+  .leaderboard-section .section-head{ margin-bottom:2rem; }
+  .leaderboard-section .section-head h2{ font-size:1.7rem; }
+  .leaderboard-section .section-head p{ color:#c6b9e6; margin-top:0.5rem; font-size:0.92rem; }
+
+  .podium{ display:flex; align-items:flex-end; justify-content:center; gap:1rem; margin-bottom:2.6rem; }
+  .podium-spot{ width:150px; text-align:center; }
+  .podium-avatar{
+    width:64px; height:64px; border-radius:50%; margin:0 auto 0.7rem;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display'; font-size:1.4rem; font-weight:700; color:#0d0618;
+    background:linear-gradient(135deg, var(--violet-bright), var(--violet-accent));
+    border:2px solid var(--gear-line);
+  }
+  .podium-name{ font-family:'Jost'; font-size:0.9rem; color:var(--paper); }
+  .podium-points{ font-family:'Jost'; font-size:0.78rem; color:var(--violet-bright); margin-top:0.2rem; }
+  .podium-bar{
+    margin-top:0.9rem; border-radius:12px 12px 0 0; border:1px solid var(--gear-line); border-bottom:none;
+    background: rgba(47,27,77,0.4); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    display:flex; align-items:flex-start; justify-content:center; padding-top:0.6rem;
+    font-family:'Playfair Display'; font-weight:700; color:var(--violet-bright);
+  }
+  .podium-spot.first .podium-bar{ height:120px; font-size:2rem; }
+  .podium-spot.first .podium-avatar{ width:78px; height:78px; font-size:1.7rem; box-shadow:0 0 0 3px rgba(240,199,94,0.35); }
+  .podium-spot.second .podium-bar{ height:90px; font-size:1.6rem; }
+  .podium-spot.third .podium-bar{ height:68px; font-size:1.6rem; }
+  .podium-crown{ font-size:1.3rem; display:block; margin-bottom:0.3rem; }
+
+  .leaderboard-list{
+    border:1px solid var(--gear-line); border-radius:18px; overflow:hidden;
+    background: rgba(47,27,77,0.28); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
+  .lb-row{ display:flex; align-items:center; gap:1rem; padding:0.9rem 1.3rem; border-bottom:1px solid var(--gear-line); }
+  .lb-row:last-child{ border-bottom:none; }
+  .lb-row.top3{ background:rgba(240,199,94,0.06); }
+  .lb-rank{ font-family:'Playfair Display'; font-weight:700; font-size:1.1rem; color:var(--violet-bright); width:28px; flex:none; }
+  .lb-avatar{
+    width:36px; height:36px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg, var(--violet-mid), var(--violet-deep));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Jost'; font-size:0.82rem; font-weight:600; color:var(--paper);
+  }
+  .lb-name{ font-family:'Jost'; font-size:0.92rem; flex:1; }
+  .lb-points{ font-family:'Jost'; font-size:0.88rem; color:var(--violet-bright); font-weight:600; }
+  .lb-row.is-you{ background:rgba(240,199,94,0.14); }
+  .you-tag{
+    display:inline-block; font-family:'Jost'; font-size:0.66rem; font-weight:700;
+    letter-spacing:0.05em; text-transform:uppercase; color:#0d0618;
+    background:var(--violet-bright); border-radius:999px; padding:0.15rem 0.5rem; margin-left:0.5rem;
+  }
+  .lb-empty{
+    padding:2.4rem 1.5rem; text-align:center; color:#c6b9e6; font-size:0.95rem;
+    border:1px dashed var(--gear-line); border-radius:18px;
+  }
+  .your-rank-wrap{ margin-top:1rem; }
+  .your-rank-wrap .your-rank-row{
+    border:1px solid var(--gear-line); border-radius:14px;
+    background: rgba(47,27,77,0.28); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  }
+  .game-card{
+    border:1px solid var(--gear-line); border-radius:20px; overflow:hidden;
+    background: rgba(47,27,77,0.32); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    display:flex; flex-direction:column;
+  }
+  .game-thumb{ aspect-ratio:16/10; background:linear-gradient(135deg, var(--violet-mid), var(--violet-deep));
+               display:flex; align-items:center; justify-content:center; font-family:'Playfair Display'; font-size:1.1rem; color:var(--violet-bright); }
+  .game-body{ padding:1.4rem; flex:1; display:flex; flex-direction:column; }
+  .game-body h3{ font-size:1.2rem; }
+  .game-body p{ color:#c6b9e6; font-size:0.9rem; margin:0.6rem 0 1.2rem; flex:1; }
+  .my-score{ font-family:'Jost'; font-size:0.82rem; color:var(--violet-bright); margin-bottom:1rem; }
+  .my-score b{ font-family:'Playfair Display'; font-size:1rem; }
+  .my-score.muted{ color:#8b7bab; font-style:italic; }
+
+  footer{ padding: 4rem 5% 2.4rem; border-top:1px solid var(--gear-line); background: rgba(23,17,6,0.55); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  .footer-box{ border:1px solid var(--gear-line); border-radius:20px; padding:2.4rem;
+               display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; align-items:center; margin-bottom:2.4rem; }
+  .footer-box h3{ color:var(--violet-bright); font-size:1.3rem; }
+  .footer-box .contact-line{ margin-top:0.5rem; color:#c6b9e6; font-size:0.92rem; }
+  .social-icons{ display:flex; gap:1rem; justify-content:flex-end; }
+  .social-icons a{ width:46px; height:46px; border-radius:50%; border:1px solid var(--gear-line);
+                    display:flex; align-items:center; justify-content:center;
+                    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease; }
+  .social-icons a:hover{ transform:translateY(-3px); background:rgba(201,162,39,0.15); border-color:var(--violet-bright); }
+  .social-icons svg{ width:20px; height:20px; fill:var(--lilac); }
+  .foot-bottom{ text-align:center; color:#6f5f92; font-size:0.8rem; }
+
+  .modal-overlay{ position:fixed; inset:0; background:rgba(13,6,24,0.82); backdrop-filter:blur(4px);
+                  display:none; align-items:center; justify-content:center; z-index:200; padding:2rem; }
+  .modal-overlay.active{ display:flex; }
+  .modal-box{ background:linear-gradient(160deg, var(--violet-deep), var(--ink)); border:1px solid var(--gear-line);
+              border-radius:22px; max-width:460px; width:100%; padding:2.2rem; position:relative; backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px); }
+  .modal-close{ position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px; border-radius:50%;
+                background:rgba(201,162,39,0.15); color:var(--violet-bright); display:flex; align-items:center;
+                justify-content:center; font-size:1.1rem; cursor:pointer; }
+  .modal-box h3{ font-size:1.3rem; }
+  .modal-box .meta{ color:var(--violet-bright); font-size:0.85rem; font-family:'Jost'; margin:0.3rem 0 1rem; }
+  .modal-box p{ color:#c6b9e6; line-height:1.7; font-size:0.95rem; }
+
+  @media (max-width: 860px){
+    .nav-toggle{ display:flex; }
+    nav ul{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:rgba(13,6,24,0.97);
+      border-bottom:1px solid var(--gear-line); padding:0.5rem 0;
+    }
+    nav ul.open{ display:flex; }
+    nav ul li{ padding:0.9rem 5%; border-top:1px solid var(--gear-line); }
+    nav ul li:first-child{ border-top:none; }
+    .footer-box{ grid-template-columns:1fr; }
+    .social-icons{ justify-content:flex-start; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<nav>
+  <div class="brand" onclick="window.location.href='index.html'" title="Go to Home" style="cursor:pointer;">
+    <img class="logo-img" src="assets/srcas-logo.png" alt="Rotaract Club of Sri Ramakrishna College of Arts and Science">
+    <span class="brand-text">Rotaract Club of SRCAS</span>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="join.html">Join</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <a href="index.html" class="back-home-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    Back to Home
+  </a>
+  <span class="eyebrow">Play a little, learn a little</span>
+  <h1>Club Games</h1>
+  <p>Sign up or log in to unlock our club games.</p>
+</div>
+
+<!-- ================================================================
+     SIGN UP / LOG IN GATE
+     👉 NOTE: this is a simple, client-side-only demo login using the
+        browser's localStorage — it is NOT secure and is not connected
+        to any real server or database. It's meant to gate the games
+        behind a friendly "create an account" step for club members,
+        not to protect sensitive data. Don't use it for anything that
+        needs real security.
+================================================================= -->
+<section id="auth-section">
+  <div class="auth-wrap">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-signup-btn" onclick="switchAuthTab('signup')">Sign Up</button>
+      <button class="auth-tab" id="tab-login-btn" onclick="switchAuthTab('login')">Log In</button>
+    </div>
+
+    <!-- SIGN UP FORM -->
+    <div class="auth-card" id="signup-card">
+      <form onsubmit="return handleSignup(event)">
+        <div class="field">
+          <label>Full Name</label>
+          <input type="text" id="signup-name" required placeholder="e.g. Ananya Raj">
+        </div>
+        <div class="field">
+          <label>Email ID</label>
+          <input type="email" id="signup-email" required placeholder="you@email.com">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="signup-password" required placeholder="Choose a password" minlength="4">
+        </div>
+        <div class="auth-error" id="signup-error"></div>
+        <button type="submit" class="btn btn-solid" style="width:100%;">Create Account &amp; Play</button>
+      </form>
+      <p class="auth-note">Already have an account? <a href="#" onclick="switchAuthTab('login'); return false;" style="color:var(--violet-bright); text-decoration:underline;">Log in instead</a></p>
+    </div>
+
+    <!-- LOG IN FORM -->
+    <div class="auth-card" id="login-card" style="display:none;">
+      <form onsubmit="return handleLogin(event)">
+        <div class="field">
+          <label>Email ID</label>
+          <input type="email" id="login-email" required placeholder="you@email.com">
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" id="login-password" required placeholder="Your password">
+        </div>
+        <div class="auth-error" id="login-error"></div>
+        <button type="submit" class="btn btn-solid" style="width:100%;">Log In &amp; Play</button>
+      </form>
+      <p class="auth-note">New here? <a href="#" onclick="switchAuthTab('signup'); return false;" style="color:var(--violet-bright); text-decoration:underline;">Create an account</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     GAMES HUB (only visible once signed up / logged in)
+     👉 CONTENT: this currently holds 2 live games — Arrow Puzzle and
+        Sort & Steep. Search for "const games = [ ... ]" in the
+        <script> below to rename, change descriptions, add a 3rd
+        game, or point a "Play" button at a new game file.
+================================================================= -->
+<section id="games-section">
+  <div class="games-hub" id="games-hub">
+    <div class="welcome-row">
+      <h2>Welcome back, <span id="welcome-name">member</span></h2>
+      <a href="#" class="logout-link" onclick="handleLogout(); return false;">Log Out</a>
+    </div>
+    <div class="games-grid" id="games-grid"></div>
+
+    <!-- ================================================================
+         LEADERBOARD — real data only, no placeholders.
+         Built from actual scores saved in the browser by any game
+         (currently Arrow Puzzle and Sort & Steep) — search the <script> for
+         "getLiveScores" to see how. It's empty until someone plays.
+         Top 3 render as a podium (tallest = 1st place), the full top
+         10 is listed below it, and if the logged-in member isn't in
+         that top 10, their own rank is shown just underneath.
+    ================================================================= -->
+    <div class="leaderboard-section">
+      <div class="section-head">
+        <span class="eyebrow">Top players</span>
+        <h2>Leaderboard</h2>
+        <p>Climb the ranks by playing the games above.</p>
+      </div>
+      <div class="podium" id="podium"></div>
+      <div class="leaderboard-list" id="leaderboard-list"></div>
+      <div class="your-rank-wrap" id="your-rank"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-box">
+    <div>
+      <h3>Rotaract Club of SRCAS</h3>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:racsrcas3206@gmail.com" style="color:inherit;text-decoration:none;">racsrcas3206@gmail.com</a></div>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.5 1 1 0 01-.25 1z"/></svg><a href="tel:+919942038045" style="color:inherit;text-decoration:none;">+91 99420 38045</a></div>
+    </div>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/rotaractsrcas/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>
+      </a>
+      <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+      </a>
+      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78L17.75 3zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45z"/></svg>
+      </a>
+    </div>
+  </div>
+  <p class="foot-bottom">© 2026 Rotaract Club of SRCAS. Service Above Self.</p>
+</footer>
+
+<div class="modal-overlay" id="game-modal">
+  <div class="modal-box" id="game-modal-content"></div>
+</div>
+
+<script>
+  // Mobile hamburger menu
+  function toggleNav(){ document.getElementById('nav-links').classList.toggle('open'); }
+  document.querySelectorAll('#nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> document.getElementById('nav-links').classList.remove('open'));
+  });
+
+  // 👉 CONTENT: keep this the same as startYear on the other pages
+  const startYear = 1975;
+
+  // ================================================================
+  // SIMPLE CLIENT-SIDE SIGN UP / LOGIN (demo-only, uses localStorage)
+  // ================================================================
+  function getUsers(){
+    try { return JSON.parse(localStorage.getItem('rotaract_games_users') || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveUsers(users){ localStorage.setItem('rotaract_games_users', JSON.stringify(users)); }
+
+  function switchAuthTab(tab){
+    const signupBtn = document.getElementById('tab-signup-btn');
+    const loginBtn = document.getElementById('tab-login-btn');
+    const signupCard = document.getElementById('signup-card');
+    const loginCard = document.getElementById('login-card');
+    if(tab === 'signup'){
+      signupBtn.classList.add('active'); loginBtn.classList.remove('active');
+      signupCard.style.display = ''; loginCard.style.display = 'none';
+    } else {
+      signupBtn.classList.remove('active'); loginBtn.classList.add('active');
+      signupCard.style.display = 'none'; loginCard.style.display = '';
+    }
+  }
+
+  function handleSignup(e){
+    e.preventDefault();
+    const name = document.getElementById('signup-name').value.trim();
+    const email = document.getElementById('signup-email').value.trim().toLowerCase();
+    const password = document.getElementById('signup-password').value;
+    const errorBox = document.getElementById('signup-error');
+    const users = getUsers();
+    if(users.some(u => u.email === email)){
+      errorBox.textContent = 'An account with this email already exists — try logging in instead.';
+      errorBox.classList.add('show');
+      return false;
+    }
+    users.push({name, email, password});
+    saveUsers(users);
+    localStorage.setItem('rotaract_games_current', JSON.stringify({name, email}));
+    enterGamesHub(name);
+    return false;
+  }
+
+  function handleLogin(e){
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const password = document.getElementById('login-password').value;
+    const errorBox = document.getElementById('login-error');
+    const users = getUsers();
+    const match = users.find(u => u.email === email && u.password === password);
+    if(!match){
+      errorBox.textContent = 'No matching account found — check your email and password.';
+      errorBox.classList.add('show');
+      return false;
+    }
+    localStorage.setItem('rotaract_games_current', JSON.stringify({name: match.name, email: match.email}));
+    enterGamesHub(match.name);
+    return false;
+  }
+
+  function handleLogout(){
+    localStorage.removeItem('rotaract_games_current');
+    document.getElementById('games-hub').classList.remove('show');
+    document.getElementById('auth-section').style.display = '';
+  }
+
+  function enterGamesHub(name){
+    document.getElementById('auth-section').style.display = 'none';
+    document.getElementById('welcome-name').textContent = name;
+    document.getElementById('games-hub').classList.add('show');
+    refreshGamesAndLeaderboard(); // pick up this member's own scores now that we know who they are
+  }
+
+  // (session check moved below, after everything it depends on is defined)
+
+  // ================================================================
+  // 👉 GAMES — 2 live games. Add a 3rd by copying one whole { } block
+  //    below, editing it, and dropping the new game's HTML file in
+  //    this same folder.
+  //    name, desc = CONTENT shown on each card
+  //    playLink   = if set, "Play" opens this real game in a new tab.
+  //                 If left out, "Play" shows a "coming soon" pop-up.
+  // ================================================================
+  const games = [
+    {name:"Arrow Puzzle", desc:"A quiet game of order — untangle the arrows so every one points the right way, in as few moves as you can manage.", playLink:"arrow-puzzle.html", gameKey:"arrow-puzzle"},
+    {name:"Sort & Steep", desc:"A calm little ball-sort puzzle — sort every colour into its own tube in as few moves as possible. Three difficulty levels, from easy to hard.", playLink:"ball-sort-puzzle.html", gameKey:"ball-sort"}
+  ];
+
+  // Looks up the logged-in member's saved score for a specific game
+  // (matches the gameKey used when that game calls syncScoreToLeaderboard).
+  function getMyScoreForGame(gameKey){
+    if(!gameKey) return null;
+    try {
+      const current = JSON.parse(localStorage.getItem('rotaract_games_current') || 'null');
+      if(!current || !current.email) return null;
+      const scores = JSON.parse(localStorage.getItem('rotaract_games_scores') || '{}');
+      const mine = scores[current.email];
+      if(!mine || !mine.games) return null;
+      return typeof mine.games[gameKey] === 'number' ? mine.games[gameKey] : null;
+    } catch(e){ return null; }
+  }
+
+  const gamesGrid = document.getElementById('games-grid');
+  function renderGamesGrid(){
+    gamesGrid.innerHTML = '';
+    games.forEach((g,i)=>{
+      const card = document.createElement('div');
+      card.className = 'game-card';
+      const playButton = g.playLink
+        ? `<a href="${g.playLink}" target="_blank" rel="noopener" class="btn btn-solid">Play</a>`
+        : `<button class="btn btn-outline" onclick="showComingSoon(${i})">Play</button>`;
+      const myScore = getMyScoreForGame(g.gameKey);
+      const scoreLine = myScore !== null
+        ? `<div class="my-score">Your score: <b>${myScore}</b></div>`
+        : (g.gameKey ? `<div class="my-score muted">Play to set your first score</div>` : '');
+      card.innerHTML = `
+        <div class="game-thumb">${g.name}</div>
+        <div class="game-body">
+          <h3>${g.name}</h3>
+          <p>${g.desc}</p>
+          ${scoreLine}
+          ${playButton}
+        </div>`;
+      gamesGrid.appendChild(card);
+    });
+  }
+
+  function showComingSoon(i){
+    const g = games[i];
+    document.getElementById('game-modal-content').innerHTML = `
+      <div class="modal-close" onclick="document.getElementById('game-modal').classList.remove('active')">✕</div>
+      <h3>${g.name}</h3>
+      <div class="meta">Coming soon</div>
+      <p>${g.desc}</p>`;
+    document.getElementById('game-modal').classList.add('active');
+  }
+  document.getElementById('game-modal').addEventListener('click', e=>{
+    if(e.target.id === 'game-modal') e.target.classList.remove('active');
+  });
+
+  // ================================================================
+  // 👉 LEADERBOARD — built entirely from real scores saved by
+  //    games (currently Arrow Puzzle and Sort & Steep) via localStorage
+  //    key "rotaract_games_scores", set in each game's own file. No
+  //    sample/placeholder players — this only shows people who've
+  //    actually played. It'll simply be empty until the first score
+  //    is saved.
+  // ================================================================
+  function getLiveScores(){
+    try {
+      const scores = JSON.parse(localStorage.getItem('rotaract_games_scores') || '{}');
+      return Object.entries(scores).map(([email, entry]) => ({
+        email,
+        name: entry.name,
+        points: Object.values(entry.games || {}).reduce((sum, v) => sum + v, 0)
+      })).filter(p => p.points > 0);
+    } catch(e){ return []; }
+  }
+
+  function getCurrentUserEmail(){
+    try {
+      const current = JSON.parse(localStorage.getItem('rotaract_games_current') || 'null');
+      return current ? current.email : null;
+    } catch(e){ return null; }
+  }
+
+  function initials(name){
+    return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  }
+
+  const podiumEl = document.getElementById('podium');
+  const listEl = document.getElementById('leaderboard-list');
+  const yourRankEl = document.getElementById('your-rank');
+
+  function renderLeaderboard(){
+    const fullLeaderboard = getLiveScores().sort((a, b) => b.points - a.points);
+    const leaderboard = fullLeaderboard.slice(0, 10);
+    const currentEmail = getCurrentUserEmail();
+
+    if(fullLeaderboard.length === 0){
+      // Nobody has played yet
+      podiumEl.innerHTML = '';
+      listEl.innerHTML = `<div class="lb-empty">No scores yet — be the first to play and claim the top spot!</div>`;
+    } else {
+      // Podium: 2nd - 1st - 3rd left-to-right, tallest bar in the middle
+      const order = [leaderboard[1], leaderboard[0], leaderboard[2]];
+      const spotClasses = ['second', 'first', 'third'];
+      const crowns = ['🥈', '🥇', '🥉'];
+      podiumEl.innerHTML = order.map((p, i) => p ? `
+        <div class="podium-spot ${spotClasses[i]}">
+          <span class="podium-crown">${crowns[i]}</span>
+          <div class="podium-avatar">${initials(p.name)}</div>
+          <div class="podium-name">${p.name}</div>
+          <div class="podium-points">${p.points} pts</div>
+          <div class="podium-bar">#${leaderboard.indexOf(p) + 1}</div>
+        </div>
+      ` : '').join('');
+
+      // Full top 10 list below the podium — the logged-in user's own row is highlighted
+      listEl.innerHTML = leaderboard.map((p, i) => `
+        <div class="lb-row ${i < 3 ? 'top3' : ''} ${p.email === currentEmail ? 'is-you' : ''}">
+          <div class="lb-rank">${i + 1}</div>
+          <div class="lb-avatar">${initials(p.name)}</div>
+          <div class="lb-name">${p.name}${p.email === currentEmail ? ' <span class="you-tag">You</span>' : ''}</div>
+          <div class="lb-points">${p.points} pts</div>
+        </div>
+      `).join('');
+    }
+
+    // "Where am I?" — shown whenever the logged-in user isn't already
+    // visible in the top 10 above (either because they haven't played,
+    // or their rank is past #10).
+    if(currentEmail){
+      const yourIndex = fullLeaderboard.findIndex(p => p.email === currentEmail);
+      if(yourIndex === -1){
+        yourRankEl.innerHTML = `<div class="lb-row your-rank-row"><div class="lb-rank">—</div><div class="lb-name">You haven't posted a score yet — play a game to join the board!</div></div>`;
+      } else if(yourIndex >= 10){
+        const you = fullLeaderboard[yourIndex];
+        yourRankEl.innerHTML = `
+          <div class="lb-row your-rank-row is-you">
+            <div class="lb-rank">${yourIndex + 1}</div>
+            <div class="lb-avatar">${initials(you.name)}</div>
+            <div class="lb-name">${you.name} <span class="you-tag">You</span></div>
+            <div class="lb-points">${you.points} pts</div>
+          </div>`;
+      } else {
+        yourRankEl.innerHTML = ''; // already visible in the top 10 above
+      }
+    } else {
+      yourRankEl.innerHTML = '';
+    }
+  }
+
+  function refreshGamesAndLeaderboard(){
+    renderGamesGrid();
+    renderLeaderboard();
+  }
+
+  // Initial render on page load
+  refreshGamesAndLeaderboard();
+
+  // If already logged in from a previous visit, skip straight to the
+  // games hub (this runs down here, after gamesGrid/podiumEl/listEl/
+  // yourRankEl above are all defined, so it's safe to call renderers).
+  (function checkExistingSession(){
+    try {
+      const current = JSON.parse(localStorage.getItem('rotaract_games_current') || 'null');
+      if(current && current.name) enterGamesHub(current.name);
+    } catch(e){}
+  })();
+
+  // ================================================================
+  // KEEP THE BOARD LIVE: each game opens in its own tab, so this
+  // games.html tab needs to re-check localStorage whenever someone
+  // switches back to it (or comes back from the game) — otherwise it
+  // would keep showing whatever it looked like before you played.
+  // ================================================================
+  window.addEventListener('focus', refreshGamesAndLeaderboard);
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState === 'visible') refreshGamesAndLeaderboard();
+  });
+</script>
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>

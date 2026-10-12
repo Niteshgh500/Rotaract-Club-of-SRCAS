@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>Events &amp; Bulletins — Rotaract Club of SRCAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #0d0618; --ink: #1c0f2e; --violet-deep: #2f1b4d; --violet-mid: #5b3a8f;
+    --violet-accent: #c9a227; --violet-bright: #f0c75e; --lilac: #e3d1fa; --paper: #f7f1e3;
+    --gear-line: rgba(240,199,94,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--black); color:var(--paper); font-family:'EB Garamond', sans-serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Playfair Display', serif; font-weight:600; letter-spacing:-0.01em; }
+  .eyebrow{ font-family:'Jost', sans-serif; text-transform:uppercase; letter-spacing:0.28em; font-size:0.72rem; color:var(--violet-bright); }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:'Jost', sans-serif; cursor:pointer; border:none;}
+  body::before{
+    content:""; position:fixed; inset:0;
+    background: radial-gradient(circle at 15% 20%, rgba(201,162,39,0.16), transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(201,162,39,0.12), transparent 45%),
+                linear-gradient(180deg, #0d0618 0%, #1c0f2e 100%);
+    z-index:-2;
+  }
+  nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+       padding:1.1rem 5%; background:rgba(13,6,24,0.72); backdrop-filter:blur(10px); border-bottom:1px solid var(--gear-line); }
+  .brand{display:flex; align-items:center; gap:0.6rem; cursor:pointer;}
+  .brand .gear{width:34px; height:34px; animation: spin 12s linear infinite;}
+  .brand .logo-img{height:48px; width:auto; display:block; border-radius:4px;}
+  .brand .brand-text{font-family:'Jost',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.02em; color:var(--paper); line-height:1.15;}
+  @media (max-width:640px){ .brand .brand-text{font-size:0.78rem;} }
+  nav ul{list-style:none; display:flex; gap:2rem; font-size:0.85rem; font-family:'Jost';}
+  nav ul a:hover{color:var(--violet-bright);}
+  @keyframes spin{ to{ transform: rotate(360deg);} }
+
+  section{padding: 5.5rem 5%; position:relative;}
+  .section-head{max-width:640px; margin-bottom:2.4rem;}
+  .section-head h2{font-size:clamp(1.9rem,4vw,2.7rem); margin-top:0.6rem;}
+  .section-head p{color:#b8aad4; margin-top:0.8rem; line-height:1.6;}
+
+  .btn{ display:inline-flex; align-items:center; gap:0.5rem; padding:0.9rem 1.7rem; border-radius:999px;
+        font-size:0.85rem; font-weight:600; letter-spacing:0.02em; transition: transform 0.25s ease; }
+  .btn-solid{background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#fff;}
+  .btn-solid:hover{transform:translateY(-2px);}
+  .btn-outline{border:1px solid var(--violet-bright); color:var(--violet-bright); background:transparent;}
+  .btn-outline:hover{background:rgba(201,162,39,0.12); transform:translateY(-2px);}
+
+  /* page header */
+  .page-header{ padding: 4rem 5% 1rem; }
+  .page-header h1{ font-size:clamp(2.2rem,5vw,3.4rem); }
+  .page-header p{ color:#b8aad4; margin-top:0.8rem; max-width:560px; }
+
+  /* badges on posters */
+  .badge{ position:absolute; top:0.7rem; left:0.7rem; padding:0.3rem 0.7rem; border-radius:999px;
+          font-family:'Jost'; font-size:0.68rem; font-weight:700; letter-spacing:0.03em; z-index:2; }
+  .badge.upcoming{ background:var(--violet-accent); color:#fff; }
+  .badge.recent{ background:rgba(13,6,24,0.7); color:var(--lilac); border:1px solid var(--gear-line); }
+
+  .events-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.4rem; margin-bottom:2rem; }
+  .event-card{ border-radius:18px; overflow:hidden; border:1px solid var(--gear-line); cursor:pointer;
+               position:relative; transition: transform 0.3s ease; }
+  .event-card:hover{ transform:translateY(-6px); }
+  .event-card img{ width:100%; height:auto; display:block; }
+  .event-info{ padding:1rem 1.1rem; background:var(--ink); }
+  .event-info b{ font-family:'Jost'; font-size:0.95rem; }
+  .event-info small{ color:var(--violet-bright); font-size:0.75rem; }
+  .events-cta{ text-align:center; margin-top:1rem; }
+
+  /* tab switcher */
+  .tab-switch{ display:flex; gap:0.8rem; padding: 0 5%; margin-top:2rem; }
+  .tab-btn{ padding:0.7rem 1.5rem; border-radius:999px; border:1px solid var(--gear-line);
+            background:transparent; color:#b8aad4; font-size:0.85rem; font-weight:600; }
+  .tab-btn.active{ background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#fff; border-color:transparent; }
+
+  /* bulletins grid (in-page, tap opens a pop-up — no separate page) */
+  .bulletins-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,280px)); gap:1.3rem; }
+
+  /* ===== COMING SOON ===== */
+  .coming-soon{ text-align:center; padding:4rem 1rem; border:1px solid var(--gear-line); border-radius:24px;
+                background:radial-gradient(circle at 50% 20%, rgba(201,162,39,0.14), transparent 60%); }
+  .coming-soon h2{ font-size:clamp(2rem,4.5vw,3rem); margin-top:0.6rem; }
+  .coming-soon p{ color:#b8aad4; margin-top:0.9rem; max-width:480px; margin-left:auto; margin-right:auto; }
+  .bulletin-card{ border-radius:16px; overflow:hidden; border:1px solid var(--gear-line); cursor:pointer;
+                  background:rgba(47,27,77,0.35); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); transition: transform 0.25s ease, border-color 0.25s ease; }
+  .bulletin-card:hover{ transform:translateY(-6px); border-color:var(--violet-bright); }
+  .bulletin-card img{ width:100%; aspect-ratio:1365/2048; object-fit:cover; }
+  .bulletin-info{ padding:0.85rem 0.9rem; text-align:center; }
+  .bulletin-info b{ font-family:'Jost'; font-size:0.85rem; display:block; }
+  .bulletin-info small{ color:var(--violet-bright); font-size:0.7rem; }
+  .modal-box ul{ color:#c6b9e6; line-height:1.9; font-size:0.9rem; padding-left:1.2rem; }
+
+  /* modal */
+  .modal-overlay{ position:fixed; inset:0; background:rgba(13,6,24,0.82); backdrop-filter:blur(4px);
+                  display:none; align-items:center; justify-content:center; z-index:200; padding:2rem; }
+  .modal-overlay.active{ display:flex; }
+  .modal-box{ background:linear-gradient(160deg, var(--violet-deep), var(--ink)); border:1px solid var(--gear-line);
+              border-radius:22px; max-width:560px; width:100%; padding:2.2rem; position:relative;
+              max-height:85vh; overflow-y:auto;  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);}
+  .modal-box img{ border-radius:14px; margin-bottom:1rem; width:100%; height:auto; max-height:75vh; object-fit:contain; }
+  .modal-close{ position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px; border-radius:50%;
+                background:rgba(201,162,39,0.15); color:var(--violet-bright); display:flex; align-items:center;
+                justify-content:center; font-size:1.1rem; cursor:pointer; }
+  .modal-box h3{ color:var(--paper); font-size:1.3rem; }
+  .modal-box .meta{ color:var(--violet-bright); font-size:0.85rem; font-family:'Jost'; margin:0.3rem 0 1rem; }
+  .modal-box p{ color:#c6b9e6; line-height:1.7; font-size:0.92rem; }
+  .modal-box .group-label{ font-family:'Jost'; font-size:0.75rem; color:var(--violet-bright);
+                            text-transform:uppercase; letter-spacing:0.1em; margin:1.2rem 0 0.5rem; }
+  .event-detail-rows{ display:flex; flex-wrap:wrap; gap:1.4rem; margin-top:1.1rem; padding-top:1rem; border-top:1px solid var(--gear-line); }
+  .detail-row{ display:flex; align-items:center; gap:0.5rem; color:#c6b9e6; font-family:'Jost'; font-size:0.85rem; }
+  .detail-row svg{ width:16px; height:16px; color:var(--violet-bright); flex-shrink:0; }
+
+  footer{ padding: 4rem 5% 2.4rem; border-top:1px solid var(--gear-line); background:rgba(23,17,6,0.55); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  .footer-box{
+    border:1px solid var(--gear-line); border-radius:20px; padding:2.4rem;
+    display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; align-items:center;
+    margin-bottom:2.4rem;
+  }
+  .footer-box h3{ color:var(--violet-bright); font-size:1.3rem; }
+  .footer-box .contact-line{ margin-top:0.5rem; color:#c6b9e6; font-size:0.92rem; }
+  .social-icons{ display:flex; gap:1rem; justify-content:flex-end; }
+  .social-icons a{
+    width:46px; height:46px; border-radius:50%;
+    border:1px solid var(--gear-line);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+  .social-icons a:hover{ transform:translateY(-3px); background:rgba(201,162,39,0.15); border-color:var(--violet-bright); }
+  .social-icons svg{ width:20px; height:20px; fill:var(--lilac); }
+  .foot-bottom{ text-align:center; color:#6f5f92; font-size:0.8rem; }
+  @media (max-width: 860px){ .footer-box{ grid-template-columns:1fr; } .social-icons{ justify-content:flex-start; } }
+
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:5px; }
+  .nav-toggle span{ display:block; width:24px; height:2px; background:var(--paper); border-radius:2px; }
+
+  @media (max-width: 860px){
+    .nav-toggle{ display:flex; }
+    nav ul{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:rgba(13,6,24,0.97);
+      border-bottom:1px solid var(--gear-line); padding:0.5rem 0;
+    }
+    nav ul.open{ display:flex; }
+    nav ul li{ padding:0.9rem 5%; border-top:1px solid var(--gear-line); }
+    nav ul li:first-child{ border-top:none; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<!-- ================================================================
+     NAV — click the logo to go to the Home page.
+================================================================= -->
+<nav>
+  <div class="brand" onclick="window.location.href='index.html'" title="Go to Home" style="cursor:pointer;">
+    <img class="logo-img" src="assets/srcas-logo.png" alt="Rotaract Club of Sri Ramakrishna College of Arts and Science">
+    <span class="brand-text">Rotaract Club of SRCAS</span>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="join.html">Join</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="eyebrow">Stay in the loop</span>
+  <h1>Events &amp; Bulletins</h1>
+  <p>Everything we've done, everything coming up, and every monthly bulletin — all in one place.</p>
+  <div class="tab-switch">
+    <button class="tab-btn active" id="tab-events-btn" onclick="switchTab('events')">Events</button>
+    <button class="tab-btn" id="tab-bulletins-btn" onclick="switchTab('bulletins')">Bulletins</button>
+  </div>
+</div>
+
+<!-- ================================================================
+     EVENTS TAB
+     👉 PIC + CONTENT: built by JavaScript — search for
+        "const events = [ ... ]" in the <script> below. Each event
+        has its own poster (img) AND its own group photo (groupImg),
+        shown together when that poster is clicked.
+================================================================= -->
+<section id="events-panel">
+  <div class="section-head">
+    <span class="eyebrow">Recent &amp; upcoming</span>
+    <h2>All Activities</h2>
+    <p>Tap any poster for the full story and the group photo from that day.</p>
+  </div>
+  <div class="events-grid" id="events-grid"></div>
+  <div class="events-cta">
+    <a href="#" class="btn btn-outline" id="view-all-btn" onclick="viewAllActivities(); return false;">View All Activities</a>
+  </div>
+</section>
+
+<!-- ================================================================
+     BULLETINS TAB (hidden until "Bulletins" is clicked above)
+     Currently shows a "Coming Soon" placeholder. When ready to add
+     real bulletins, swap the .coming-soon div below for a
+     .bulletins-grid and bring back the bulletin data/rendering code.
+================================================================= -->
+<section id="bulletins-panel" style="display:none;">
+  <div class="section-head">
+    <span class="eyebrow">Monthly editions</span>
+    <h2>Club Bulletins</h2>
+    <p>Tap any cover to open the full flip-book edition in a new tab.</p>
+  </div>
+  <div class="bulletins-grid" id="bulletins-grid"></div>
+</section>
+
+<!-- ================================================================
+     FOOTER — club name, email, phone, and social icons.
+     👉 CONTENT: fill in the real handles AND replace href="#" on each
+        icon with the real profile link (e.g. https://instagram.com/yourclub)
+================================================================= -->
+<footer>
+  <div class="footer-box">
+    <div>
+      <h3>Rotaract Club of SRCAS</h3>
+      <!-- CONTENT: club email -->
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:racsrcas3206@gmail.com" style="color:inherit;text-decoration:none;">racsrcas3206@gmail.com</a></div>
+      <!-- CONTENT: club phone number -->
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.5 1 1 0 01-.25 1z"/></svg><a href="tel:+919942038045" style="color:inherit;text-decoration:none;">+91 99420 38045</a></div>
+    </div>
+    <div class="social-icons">
+      <!-- CONTENT: put your real Instagram link in href -->
+      <a href="https://www.instagram.com/rotaractsrcas/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>
+      </a>
+      <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+      </a>
+      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78L17.75 3zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45z"/></svg>
+      </a>
+    </div>
+  </div>
+  <p class="foot-bottom">© 2026 Rotaract Club of SRCAS. Service Above Self.</p>
+</footer>
+
+<!-- Event detail pop-up (poster + description + that event's own group photo) -->
+<div class="modal-overlay" id="event-modal">
+  <div class="modal-box" id="event-modal-content"></div>
+</div>
+
+<script>
+  // Mobile hamburger menu
+  function toggleNav(){ document.getElementById('nav-links').classList.toggle('open'); }
+  document.querySelectorAll('#nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> document.getElementById('nav-links').classList.remove('open'));
+  });
+
+  // ================================================================
+  // 👉 CONTENT: keep this the same as startYear in index.html/about.html
+  const startYear = 1975;
+
+  // ================================================================
+  // 👉 EVENTS DATA — one { } block per event poster.
+  //    img      = PIC (event poster)
+  //    groupImg = PIC (group photo from that specific event)
+  //    status   = "upcoming" or "recent" (controls the little badge)
+  //    name, date, desc = CONTENT
+  //    TO ADD A NEW POSTER: copy one whole {name: ... } block below
+  //    (from its opening { to its closing }), paste it as a new
+  //    entry, edit the fields, and make sure there's a comma after
+  //    the block above it. TO REMOVE ONE: delete its whole block.
+  // ================================================================
+  const events = [
+    {name:"Serve and Savor — Celebrating Charter Day", date:"9 October 2026", time:"4:30 PM – 6:00 PM", venue:"High For This", status:"recent",
+     img:"events/serve-and-savor.jpg",
+     desc:"Good Food · Good People · Great Moments. Members came together over coffee and dessert to celebrate the club's Charter Day — because Rotaract builds friendships. Event Chair: Rtr. Manoj · Event Secretary: Rtr. Nikhita · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Special Meeting — Club Officials Board Meeting", date:"30 September 2026", time:"1:30 PM", venue:"SRCAS", status:"recent",
+     img:"events/special-meeting.jpg",
+     desc:"Together We Discuss. Together We Decide. Together We Grow. A special board meeting of the club officials to review progress and plan the road ahead. Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"World Tourism Day", date:"27 September 2026", time:"4:00 PM – 5:30 PM", venue:"Semmozhi Poonga, Coimbatore", status:"recent",
+     img:"events/world-tourism-day.jpg",
+     desc:"Explore · Appreciate · Preserve. A walk towards a greener tomorrow — members visited Semmozhi Poonga to explore its natural beauty and biodiversity. Event Chair: Rtr. Thamizhvanan · Event Secretary: Rtr. Dharsan · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Treasure Hunt", date:"25 September 2026", time:"2:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/treasure-hunt.jpg",
+     desc:"Find · Solve · Unlock · Together. A thrilling adventure where participants followed clues, solved puzzles, and uncovered hidden secrets to find the ultimate treasure — teamwork, creativity, and problem-solving in a race against time. Event Chair: Rtr. Karthika · Event Secretary: Rtr. Nitesh · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Fun Race", date:"19 September 2026", time:"4:00 PM", venue:"Race Course, Coimbatore", status:"recent",
+     img:"events/fun-race.jpg",
+     desc:"Walk · Jog · Bond · Together. Run for friendship, stronger together — a relaxed evening walk-and-jog around Race Course. Good people, great miles. Event Chair: Rtr. Negarigaa · Event Secretary: Rtr. Ashwathi · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Beyond the Burnout", date:"19 September 2026", time:"10:30 AM – 12:30 PM", venue:"SRCAS Conference Hall 3", status:"recent",
+     img:"events/beyond-the-burnout.jpg",
+     desc:"Overcome personal stress, learn practical coping tools, and build long-term mental resilience. A session led by Rtr. Hamna A A Wakil — you are more than what you're going through. Event Chair: Rtr. Gugan · Event Secretary: Rtr. Madhumitha · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Safe Rise — Painting Speed Breakers (Edition 2)", date:"10 September 2026", time:"11:00 PM", venue:"In and around Coimbatore", status:"recent",
+     img:"events/safe-rise-edition-2.jpg",
+     desc:"Safer Roads, Brighter Tomorrows. The second edition of Safe Rise — a night drive painting faded speed breakers so they stay visible to riders and drivers. A safer Coimbatore begins with us. Event Chair: Rtr. Gugan · Event Secretary: Rtr. Hashish · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Heros at Dark", date:"9 September 2026", time:"11:00 PM", venue:"In and around Coimbatore", status:"recent",
+     img:"events/heros-at-dark.jpg",
+     desc:"A cup of care, a brighter night. Members served tea to security staff and working people on night shifts — same people, different hours, same respect. Event Chair: Rtr. Sai Pranesh · Event Secretary: Rtr. Hashish Laa · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Reflective Stickers", date:"3 September 2026", time:"10:00 AM", venue:"In and around Coimbatore", status:"recent",
+     img:"events/reflective-stickers.jpg",
+     desc:"Small Sticker. Big Safety. Members fixed reflective stickers on two-wheelers to make riders visible at night, under the District's ONE Priority Projects. Stick today. Ride safe. Save lives. Event Chair: Rtr. Madhumitha · Event Secretary: Rtr. Ashwathi · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Tax Decoded", date:"31 August 2026", time:"2:00 PM onwards", venue:"B203, SRCAS", status:"recent",
+     img:"events/tax-decoded.jpg",
+     desc:"Understand Today. Empower Tomorrow. A practical session on the basics of taxation, led by trainer Dr. M. Devipriya. Event Chair: Rtr. Gugan · Event Secretary: Rtr. Athulya · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Icecream Stories", date:"25 August 2026", time:"2:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/icecream-stories.jpg",
+     desc:"Good People. Great Conversations. Sweet Moments. An afternoon of ice-cream and easy conversation — scoop, share, smile, and leave with a new story. Event Chair: Rtr. Amirtha · Event Secretary: Rtr. Sushimitha · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Onam", date:"24 August 2026", time:"3:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/onam.jpg",
+     desc:"One Culture. One Family. One Celebration. \"ഒന്നായ് നമുക്ക്, ഒരുമയോടെ മുന്നേറാം\" — Together as one, let's move forward united. A celebration of the harvest of happiness, the colour of tradition, and the joy of togetherness. Event Chair: Rtr. Ashwathi · Event Secretary: Rtr. Madhumitha · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Punitham", date:"24 August 2026", time:"9:00 AM", venue:"Marudhamalai", status:"recent",
+     img:"events/punitham.jpg",
+     desc:"A morning visit to the Marudhamalai hill temple for reflection, gratitude, and togetherness away from campus. Event Chair: Rtr. Akash · Event Secretary: Rtr. Negarigaa · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Project Safe Rise", date:"22 August 2026", time:"11:00 PM", venue:"To be announced", status:"recent",
+     img:"events/project-safe-rise.jpg",
+     desc:"Safer Streets. Stronger Tomorrows. A night-time road-marking drive to repaint faded kerbs and lane lines around campus, run under the District's ONE Priority Projects and the RISE of Resurgence theme for 2026-27. Faculty Co-ordinators: Dr. M. Karthika & Mr. L. R. Siva Raman."},
+    {name:"Potluck", date:"20 August 2026", time:"1:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/potluck.jpg",
+     desc:"Good Food. Great People. Better Together. Members brought their favourite dish to share for an afternoon of food and fellowship. Event Chair: Rtr. Nikhita · Event Secretary: Rtr. Manoj."},
+    {name:"Vista — Board Meeting", date:"18 August 2026", time:"2:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/vista-board-meeting.jpg",
+     desc:"Align · Plan · Lead. The club board came together to align on goals, plan upcoming projects, and set the leadership direction for the term ahead."},
+    {name:"Reawaken — 34th Installation Ceremony", date:"7 August 2026", time:"9:00 AM", venue:"Conference Hall 1, SRCAS", status:"recent",
+     img:"events/reawaken.jpg",
+     desc:"The Installation of Rtr. Mohan Prabhu as President 2026-27, along with the Board of Directors 2026-27. \"Leadership is not inherited; it is earned through service, vision, and commitment.\" Chief Guest: Rtn. R.S. Maruti (District Governor) · Guest of Honour: Dr. B.L. Shivakumar (Principal, SRCAS) · Special Invitees: Dr. M. Mandhirasalam (Librarian & Dean ARRA, CIT College) and Rtn. J. Sridhar (Coimbatore Midtown) · District Rotaract Representative: Rtr. MPHF Vijay Vignesh V K."},
+    {name:"Roots of Tomorrow — Seed Ball Plantation Drive", date:"3 August 2026", time:"2:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/roots-of-tomorrow.jpg",
+     desc:"Small seeds can create mighty forests. Members spread seed balls across campus to restore green spaces, encourage biodiversity, and leave a lasting environmental impact. Event Chair: Rtr. Nikhita · Event Secretary: Rtr. Manoj."},
+    {name:"Breaking Bread", date:"16 July 2026", time:"2:00 PM", venue:"Persian Qureshi Mandi", status:"recent",
+     img:"events/breaking-bread.jpg",
+     desc:"A themed get-together where members broke bread — quite literally — over a shared meal at Persian Qureshi Mandi. Good food, good company, and a lot of inside jokes."}
+  ];
+
+  // 👉 Extra archived events, only shown once "View All Activities" is
+  //    tapped. Same fields and same copy-paste method as "events" above.
+  const moreEvents = [];
+
+  const eventsGrid = document.getElementById('events-grid');
+  function renderEvents(list){
+    list.forEach((e)=>{
+      const card = document.createElement('div');
+      card.className = 'event-card';
+      card.onclick = ()=> showEventModal(e);
+      card.innerHTML = `
+        <span class="badge ${e.status}">${e.status === 'upcoming' ? 'Upcoming' : 'Recent'}</span>
+        <img src="${e.img}" alt="${e.name}">
+        <div class="event-info"><b>${e.name}</b><br><small>${e.date}</small></div>`;
+      eventsGrid.appendChild(card);
+    });
+  }
+  renderEvents(events);
+
+  if (moreEvents.length === 0) {
+    document.getElementById('view-all-btn').style.display = 'none';
+  }
+  function viewAllActivities(){
+    renderEvents(moreEvents);
+    document.getElementById('view-all-btn').style.display = 'none';
+  }
+
+  function showEventModal(e){
+    const groupSection = (e.groupImg && e.groupImg !== e.img) ? `
+      <div class="group-label">Photos from this event</div>
+      <img src="${e.groupImg}" alt="${e.name} group photo">` : '';
+    const detailsSection = (e.time || e.venue) ? `
+      <div class="event-detail-rows">
+        ${e.time ? `<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>${e.time}</div>` : ''}
+        ${e.venue ? `<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>${e.venue}</div>` : ''}
+      </div>` : '';
+    document.getElementById('event-modal-content').innerHTML = `
+      <div class="modal-close" onclick="closeEventModal()">✕</div>
+      <img src="${e.img}" alt="${e.name}">
+      <h3>${e.name}</h3>
+      <div class="meta">${e.date} · ${e.status === 'upcoming' ? 'Upcoming' : 'Recent'}</div>
+      <p>${e.desc}</p>
+      ${detailsSection}
+      ${groupSection}`;
+    document.getElementById('event-modal').classList.add('active');
+  }
+  function closeEventModal(){ document.getElementById('event-modal').classList.remove('active'); }
+  document.getElementById('event-modal').addEventListener('click', e=>{
+    if(e.target.id === 'event-modal') closeEventModal();
+  });
+
+  // ================================================================
+  // 👉 BULLETINS DATA — one { } block per monthly bulletin cover.
+  //    img  = PIC (bulletin cover)
+  //    link = URL to the full flip-book edition — tapping the cover
+  //           opens this in a new tab
+  //    TO ADD A NEW BULLETIN: copy one whole {name: ... } block below,
+  //    paste it as a new entry, edit the fields, and add a comma
+  //    after the block above it. TO REMOVE ONE: delete its whole block.
+  // ================================================================
+  const bulletins = [
+    {name:"Resurge of SRCAS", date:"Chapter 03 · September 2026",
+     img:"https://cdnm.heyzine.com/files/uploaded/v3/f287f28226f014d37a4302bd81a8ca1cef864911.pdf-thumb.jpg",
+     link:"https://heyzine.com/flip-book/f287f28226.html#page/1"},
+    {name:"Resurge of SRCAS", date:"Chapter 02 · August 2026",
+     img:"https://cdnm.heyzine.com/files/uploaded/v2/30b9633e58dc7e8775a007effecf9767682a3a48.pdf-thumb.jpg",
+     link:"https://heyzine.com/flip-book/30b9633e58.html#page/1"},
+    {name:"Resurge of SRCAS", date:"Chapter 01 · July 2026",
+     img:"bulletins/resurge-of-srcas.jpg",
+     link:"https://heyzine.com/flip-book/3303a8e6b4.html#page/22"}
+  ];
+
+  const bulletinsGrid = document.getElementById('bulletins-grid');
+  bulletins.forEach(b=>{
+    const card = document.createElement('div');
+    card.className = 'bulletin-card';
+    card.onclick = ()=> window.open(b.link, '_blank', 'noopener');
+    card.innerHTML = `
+      <img src="${b.img}" alt="${b.name}">
+      <div class="bulletin-info"><b>${b.name}</b><br><small>${b.date}</small></div>`;
+    bulletinsGrid.appendChild(card);
+  });
+
+  // ================================================================
+  // TAB SWITCHING (Events <-> Bulletins) — both live on this one page
+  // ================================================================
+  function switchTab(tab){
+    const eventsPanel = document.getElementById('events-panel');
+    const bulletinsPanel = document.getElementById('bulletins-panel');
+    const eventsBtn = document.getElementById('tab-events-btn');
+    const bulletinsBtn = document.getElementById('tab-bulletins-btn');
+    if(tab === 'events'){
+      eventsPanel.style.display = ''; bulletinsPanel.style.display = 'none';
+      eventsBtn.classList.add('active'); bulletinsBtn.classList.remove('active');
+    } else {
+      eventsPanel.style.display = 'none'; bulletinsPanel.style.display = '';
+      eventsBtn.classList.remove('active'); bulletinsBtn.classList.add('active');
+    }
+  }
+</script>
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>

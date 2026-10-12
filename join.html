@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>Join Us — Rotaract Club of SRCAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #0d0618; --ink: #1c0f2e; --violet-deep: #2f1b4d; --violet-mid: #5b3a8f;
+    --violet-accent: #c9a227; --violet-bright: #f0c75e; --lilac: #e3d1fa; --paper: #f7f1e3;
+    --gear-line: rgba(240,199,94,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--black); color:var(--paper); font-family:'EB Garamond', sans-serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Playfair Display', serif; font-weight:600; letter-spacing:-0.01em; }
+  .eyebrow{ font-family:'Jost', sans-serif; text-transform:uppercase; letter-spacing:0.28em; font-size:0.72rem; color:var(--violet-bright); }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:'Jost', sans-serif; cursor:pointer; border:none;}
+  body::before{
+    content:""; position:fixed; inset:0;
+    background: radial-gradient(circle at 15% 20%, rgba(201,162,39,0.16), transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(201,162,39,0.12), transparent 45%),
+                linear-gradient(180deg, #0d0618 0%, #1c0f2e 100%);
+    z-index:-2;
+  }
+  nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+       padding:1.1rem 5%; background:rgba(13,6,24,0.72); backdrop-filter:blur(10px); border-bottom:1px solid var(--gear-line); }
+  .brand{display:flex; align-items:center; gap:0.6rem; cursor:pointer;}
+  .brand .gear{width:34px; height:34px; animation: spin 12s linear infinite;}
+  .brand .logo-img{height:48px; width:auto; display:block; border-radius:4px;}
+  .brand .brand-text{font-family:'Jost',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.02em; color:var(--paper); line-height:1.15;}
+  @media (max-width:640px){ .brand .brand-text{font-size:0.78rem;} }
+  nav ul{list-style:none; display:flex; gap:1.8rem; font-size:0.85rem; font-family:'Jost';}
+  nav ul a:hover{color:var(--violet-bright);}
+  @keyframes spin{ to{ transform: rotate(360deg);} }
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:5px; }
+  .nav-toggle span{ display:block; width:24px; height:2px; background:var(--paper); border-radius:2px; }
+
+  section{padding: 5rem 5%; position:relative;}
+  .section-head{max-width:640px; margin-bottom:2.2rem;}
+  .section-head h2{font-size:clamp(1.9rem,4vw,2.7rem); margin-top:0.6rem;}
+  .section-head p{color:#b8aad4; margin-top:0.8rem; line-height:1.6;}
+
+  .btn{ display:inline-flex; align-items:center; gap:0.5rem; padding:0.9rem 1.7rem; border-radius:999px;
+        font-size:0.85rem; font-weight:600; letter-spacing:0.02em; transition: transform 0.25s ease; }
+  .btn-solid{background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#fff;}
+  .btn-solid:hover{transform:translateY(-2px);}
+  .btn-outline{border:1px solid var(--violet-bright); color:var(--violet-bright); background:transparent;}
+  .btn-outline:hover{background:rgba(201,162,39,0.12); transform:translateY(-2px);}
+
+  /* ===== HERO: QUOTE (left) + GROUP PHOTO (right) ===== */
+  .join-hero{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:3rem; align-items:center;
+    padding-top:4.5rem;
+  }
+  .join-quote blockquote{
+    font-family:'Playfair Display', serif; font-style:italic;
+    font-size:clamp(1.6rem,3.6vw,2.6rem); line-height:1.35;
+    color:var(--paper); position:relative; padding-left:1.4rem;
+    border-left:3px solid var(--violet-bright);
+  }
+  .join-quote blockquote span{ color:var(--violet-bright); }
+  .join-quote .cta-row{ display:flex; gap:1rem; margin-top:2.2rem; flex-wrap:wrap; }
+  .join-hero-photo{ border-radius:24px; overflow:hidden; border:1px solid var(--gear-line); }
+  .join-hero-photo img{ aspect-ratio:4/5; object-fit:cover; width:100%; }
+
+  /* ===== STAT BOX ===== */
+  .stat-box{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem;
+    border:1px solid var(--gear-line); border-radius:24px; padding:2.4rem;
+    background: radial-gradient(circle at 30% 20%, rgba(201,162,39,0.14), transparent 60%);
+  }
+  .stat-box .num{ font-family:'Jost'; font-size:2.4rem; font-weight:700; color:var(--paper); }
+  .stat-box .label{ margin-top:0.4rem; color:#b8aad4; font-size:0.88rem; text-align:center; }
+  .stat-box .stat-item{ text-align:center; }
+
+  /* ===== WHY JOIN — rectangle reason cards ===== */
+  .reasons-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:1.2rem; }
+  .reason-rect{
+    display:flex; align-items:center; gap:1rem;
+    border:1px solid var(--gear-line); border-radius:14px; padding:1.3rem 1.4rem;
+    background:rgba(47,27,77,0.32); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
+  .reason-rect .icon{
+    width:42px; height:42px; border-radius:12px; flex:none;
+    background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid));
+    display:flex; align-items:center; justify-content:center; color:#fff;
+  }
+  .reason-rect .icon svg{ width:20px; height:20px; }
+  .reason-rect p{ color:#c6b9e6; font-size:0.9rem; line-height:1.5; }
+
+  /* ===== QUOTE BAND ===== */
+  .quote-band{ text-align:center; padding:2.4rem 5%; }
+  .quote-band p{ font-family:'Playfair Display', serif; font-style:italic; font-size:clamp(1.15rem,2.6vw,1.55rem);
+                 color:var(--violet-bright); max-width:720px; margin:0 auto; }
+
+  /* ===== PRESIDENT'S MESSAGE ===== */
+  .president-card{
+    display:grid; grid-template-columns:200px 1fr; gap:2.2rem; align-items:center;
+    border:1px solid var(--gear-line); border-radius:24px; padding:2.4rem;
+    background: rgba(47,27,77,0.3); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
+  .president-card img{ border-radius:18px; aspect-ratio:1/1; object-fit:cover; border:1px solid var(--gear-line); }
+  .president-card blockquote{ color:#c6b9e6; line-height:1.8; font-size:0.98rem; font-style:italic; }
+  .president-card .sign{ margin-top:1.1rem; font-family:'Jost'; color:var(--paper); font-weight:600; font-size:0.92rem; }
+  .president-card .sign small{ display:block; color:var(--violet-bright); font-weight:400; font-size:0.78rem; margin-top:2px; }
+
+  /* ===== QR CODE ===== */
+  .qr-section{ text-align:center; }
+  .qr-box{
+    display:inline-flex; flex-direction:column; align-items:center; gap:1rem;
+    border:1px solid var(--gear-line); border-radius:24px; padding:2.2rem 2.6rem;
+    background: rgba(47,27,77,0.3); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
+  .qr-box img{ width:180px; height:180px; border-radius:12px; background:#fff; padding:10px; }
+  .qr-box p{ color:#b8aad4; font-size:0.85rem; max-width:260px; }
+
+  footer{ padding: 4rem 5% 2.4rem; border-top:1px solid var(--gear-line); background:rgba(23,17,6,0.55); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  .footer-box{ border:1px solid var(--gear-line); border-radius:20px; padding:2.4rem;
+               display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; align-items:center; margin-bottom:2.4rem; }
+  .footer-box h3{ color:var(--violet-bright); font-size:1.3rem; }
+  .footer-box .contact-line{ margin-top:0.5rem; color:#c6b9e6; font-size:0.92rem; }
+  .social-icons{ display:flex; gap:1rem; justify-content:flex-end; }
+  .social-icons a{ width:46px; height:46px; border-radius:50%; border:1px solid var(--gear-line);
+                    display:flex; align-items:center; justify-content:center;
+                    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease; }
+  .social-icons a:hover{ transform:translateY(-3px); background:rgba(201,162,39,0.15); border-color:var(--violet-bright); }
+  .social-icons svg{ width:20px; height:20px; fill:var(--lilac); }
+  .foot-bottom{ text-align:center; color:#6f5f92; font-size:0.8rem; }
+
+  .modal-overlay{ position:fixed; inset:0; background:rgba(13,6,24,0.82); backdrop-filter:blur(4px);
+                  display:none; align-items:center; justify-content:center; z-index:200; padding:2rem; }
+  .modal-overlay.active{ display:flex; }
+  .modal-box{ background:linear-gradient(160deg, var(--violet-deep), var(--ink)); border:1px solid var(--gear-line);
+              border-radius:22px; max-width:460px; width:100%; padding:2.2rem; position:relative;
+              max-height:85vh; overflow-y:auto;  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);}
+  .modal-close{ position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px; border-radius:50%;
+                background:rgba(201,162,39,0.15); color:var(--violet-bright); display:flex; align-items:center;
+                justify-content:center; font-size:1.1rem; cursor:pointer; }
+  .modal-box h3{ font-size:1.3rem; }
+  .modal-box .meta{ color:var(--violet-bright); font-size:0.85rem; font-family:'Jost'; margin:0.3rem 0 1rem; }
+  .modal-box .field{ margin-bottom:1.1rem; }
+  .modal-box label{ display:block; font-size:0.78rem; font-family:'Jost'; color:#a993d6; margin-bottom:0.4rem; }
+  .modal-box input, .modal-box textarea{
+    width:100%; padding:0.8rem 1rem; border-radius:10px;
+    background:var(--black); border:1px solid var(--gear-line); color:var(--paper); font-family:'EB Garamond'; font-size:0.92rem;
+  }
+  .modal-box textarea{ resize:vertical; min-height:90px; }
+
+  @media (max-width: 860px){
+    .nav-toggle{ display:flex; }
+    nav ul{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:rgba(13,6,24,0.97);
+      border-bottom:1px solid var(--gear-line); padding:0.5rem 0;
+    }
+    nav ul.open{ display:flex; }
+    nav ul li{ padding:0.9rem 5%; border-top:1px solid var(--gear-line); }
+    nav ul li:first-child{ border-top:none; }
+    .join-hero, .president-card{ grid-template-columns:1fr; }
+    .join-hero-photo{ order:-1; }
+    .president-card img{ margin:0 auto; width:140px; }
+    .president-card{ text-align:center; }
+    .stat-box{ grid-template-columns:1fr; }
+    .reasons-grid{ grid-template-columns:1fr; }
+    .footer-box{ grid-template-columns:1fr; }
+    .social-icons{ justify-content:flex-start; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<nav>
+  <div class="brand" onclick="window.location.href='index.html'" title="Go to Home" style="cursor:pointer;">
+    <img class="logo-img" src="assets/srcas-logo.png" alt="Rotaract Club of Sri Ramakrishna College of Arts and Science">
+    <span class="brand-text">Rotaract Club of SRCAS</span>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="join.html">Join</a></li>
+  </ul>
+</nav>
+
+<!-- ================================================================
+     HERO: QUOTE (left) + ONE GROUP PHOTO (right)
+     👉 PIC: replace the group photo src="..." below.
+     👉 CONTENT: edit the quote text inside the <blockquote>.
+================================================================= -->
+<section>
+  <div class="join-hero">
+    <div class="join-quote">
+      <span class="eyebrow">Why we do this</span>
+      <blockquote style="margin-top:1rem;">"You don't find a purpose. You <span>build</span> one — one project, one Saturday, one person at a time."</blockquote>
+      <div class="cta-row">
+        <a href="#" class="btn btn-solid" onclick="openModal('join-form-modal'); return false;">#Join</a>
+        <a href="about.html" class="btn btn-outline">Learn More</a>
+      </div>
+    </div>
+    <div class="join-hero-photo">
+      <!-- PIC: group photo next to the quote -->
+      <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=700&q=70" alt="Club group photo">
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     STAT BOX
+     👉 CONTENT: the three numbers below (Annual Projects, Active
+        Members are fixed; Years Legacy is calculated automatically
+        from "const startYear" in the <script> — keep it matching the
+        same year used on the other pages).
+================================================================= -->
+<section style="padding-top:0;">
+  <div class="stat-box">
+    <div class="stat-item">
+      <div class="num">11+</div>
+      <div class="label">Annual Projects</div>
+    </div>
+    <div class="stat-item">
+      <div class="num">85</div>
+      <div class="label">Active Members</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="years-legacy-num">—</div>
+      <div class="label">Years Legacy</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     WHY JOIN — reasons shown as rectangle cards
+     👉 CONTENT: edit each reason's text below.
+================================================================= -->
+<section id="why-join">
+  <div class="section-head">
+    <span class="eyebrow">Be part of something greater</span>
+    <h2>Why Join Us?</h2>
+  </div>
+  <div class="reasons-grid">
+    <div class="reason-rect"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15l-3 5 1-6M12 15l3 5-1-6M12 15c3-2 5-6 5-10a5 5 0 00-10 0c0 4 2 8 5 10z"/><circle cx="12" cy="6" r="1.6"/></svg></div><p>Lead real projects, not just attend them — chair a committee in your very first term.</p></div>
+    <div class="reason-rect"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 010 18M12 3a14 14 0 000 18"/></svg></div><p>Build a network across cities and countries through District and international events.</p></div>
+    <div class="reason-rect"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></div><p>Learn leadership by actually practicing it, not just reading about it.</p></div>
+    <div class="reason-rect"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1"/><circle cx="9" cy="7" r="3.2"/><path d="M23 21v-1a4 4 0 00-3-3.87"/><path d="M16.5 3.2a3.2 3.2 0 010 6.15"/></svg></div><p>Turn a free Saturday into something that matters, alongside people who show up too.</p></div>
+    <div class="reason-rect"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 6h6v6"/></svg></div><p>Pick up real skills — event planning, fundraising, public speaking — on the job.</p></div>
+    <div class="reason-rect"><div class="icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.35-9.5-8.5C.7 9 2 5.5 5.3 4.6 7.4 4 9.6 5 11 6.8c.4.5 1 .5 1.4 0C13.8 5 16 4 18.1 4.6 21.4 5.5 22.7 9 20.9 12.5 18.4 16.65 12 21 12 21z"/></svg></div><p>Join a community that becomes friendship long after any single project ends.</p></div>
+  </div>
+</section>
+
+<!-- CONTENT: "Inside the Crew" quote -->
+<div class="quote-band">
+  <span class="eyebrow">Inside the crew</span>
+  <p style="margin-top:0.8rem;">"We're not looking for people with free time. We're looking for people who make time for what matters."</p>
+</div>
+
+<!-- ================================================================
+     A MESSAGE FROM THE PRESIDENT
+     👉 PIC: president's photo below.
+     👉 CONTENT: the message text and sign-off.
+================================================================= -->
+<section id="president-message">
+  <div class="section-head">
+    <span class="eyebrow">In their own words</span>
+    <h2>A Message From Our President</h2>
+  </div>
+  <div class="president-card">
+    <!-- PIC: president's photo -->
+    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&q=60" alt="Club President">
+    <div>
+      <!-- CONTENT: president's message -->
+      <blockquote>"When I joined, I thought I was signing up to volunteer on weekends. What I actually found was a room full of people who'd show up for anything — a blood camp, a bad day, a 6 AM tree plantation. If you've ever wanted to do something that matters, and do it with people who'll become your closest friends, this is that room. Come find out for yourself."</blockquote>
+      <div class="sign">Aarav Menon<small>President, Rotaract Club of SRCAS</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     QR CODE FOR THE JOIN FORM
+     👉 CONTENT: replace the "data=" link inside the QR image URL
+        below with your real membership form link (Google Form, etc.)
+        — the QR code image updates automatically to match it.
+================================================================= -->
+<section class="qr-section">
+  <div class="section-head" style="margin:0 auto 2rem; text-align:center;">
+    <span class="eyebrow">Scan to join</span>
+    <h2>Ready When You Are</h2>
+  </div>
+  <div class="qr-box">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://rotaractcoimbatore.org/join" alt="QR code to the membership form">
+    <p>Scan with your phone's camera to open the membership interest form directly.</p>
+    <a href="#" class="btn btn-solid" onclick="openModal('join-form-modal'); return false;">Or Fill It Here</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-box">
+    <div>
+      <h3>Rotaract Club of SRCAS</h3>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:racsrcas3206@gmail.com" style="color:inherit;text-decoration:none;">racsrcas3206@gmail.com</a></div>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.5 1 1 0 01-.25 1z"/></svg><a href="tel:+919942038045" style="color:inherit;text-decoration:none;">+91 99420 38045</a></div>
+    </div>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/rotaractsrcas/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>
+      </a>
+      <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+      </a>
+      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78L17.75 3zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45z"/></svg>
+      </a>
+    </div>
+  </div>
+  <p class="foot-bottom">© 2026 Rotaract Club of SRCAS. Service Above Self.</p>
+</footer>
+
+<!-- Membership interest form pop-up -->
+<div class="modal-overlay" id="join-form-modal">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeModal('join-form-modal')">✕</div>
+    <h3>Membership Interest Form</h3>
+    <form id="join-form" onsubmit="return handleJoinForm(event)" style="margin-top:1.2rem;">
+      <div class="field"><label>Full Name</label><input type="text" required></div>
+      <div class="field"><label>Email ID</label><input type="email" required></div>
+      <div class="field"><label>Phone Number</label><input type="tel" required></div>
+      <div class="field"><label>Why do you want to join?</label><textarea placeholder="A line or two is plenty"></textarea></div>
+      <button type="submit" class="btn btn-solid">Submit Interest</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Mobile hamburger menu
+  function toggleNav(){ document.getElementById('nav-links').classList.toggle('open'); }
+  document.querySelectorAll('#nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> document.getElementById('nav-links').classList.remove('open'));
+  });
+
+  function openModal(id){ document.getElementById(id).classList.add('active'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+  document.querySelectorAll('.modal-overlay').forEach(ov=>{
+    ov.addEventListener('click', e=>{ if(e.target===ov) ov.classList.remove('active'); });
+  });
+
+  function handleJoinForm(e){
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = "Thanks — we'll be in touch!";
+    btn.style.opacity = 0.75;
+    form.querySelectorAll('input, textarea').forEach(el => el.disabled = true);
+    return false;
+  }
+
+  // 👉 CONTENT: keep this the same as startYear on the other pages
+  const startYear = 1975;
+  document.getElementById('years-legacy-num').textContent = (new Date().getFullYear() - startYear) + '+';
+
+</script>
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>

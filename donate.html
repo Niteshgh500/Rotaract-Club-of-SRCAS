@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>Donate — Rotaract Club of Coimbatore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #0d0618; --ink: #1c0f2e; --violet-deep: #2f1b4d; --violet-mid: #5b3a8f;
+    --violet-accent: #c9a227; --violet-bright: #f0c75e; --lilac: #e3d1fa; --paper: #f7f1e3;
+    --gear-line: rgba(240,199,94,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{ background:var(--black); color:var(--paper); font-family:'EB Garamond', sans-serif; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Playfair Display', serif; font-weight:600; letter-spacing:-0.01em; }
+  .eyebrow{ font-family:'Jost', sans-serif; text-transform:uppercase; letter-spacing:0.28em; font-size:0.72rem; color:var(--violet-bright); }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:'Jost', sans-serif; cursor:pointer; border:none;}
+  body::before{
+    content:""; position:fixed; inset:0;
+    background: radial-gradient(circle at 15% 20%, rgba(201,162,39,0.16), transparent 40%),
+                radial-gradient(circle at 85% 75%, rgba(201,162,39,0.12), transparent 45%),
+                linear-gradient(180deg, #0d0618 0%, #1c0f2e 100%);
+    z-index:-2;
+  }
+  nav{ position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+       padding:1.1rem 5%; background:rgba(13,6,24,0.72); backdrop-filter:blur(10px); border-bottom:1px solid var(--gear-line); }
+  .brand{display:flex; align-items:center; gap:0.6rem; cursor:pointer;}
+  .brand .gear{width:34px; height:34px; animation: spin 12s linear infinite;}
+  .brand .logo-img{height:48px; width:auto; display:block; border-radius:4px;}
+  .brand .brand-text{font-family:'Jost',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.02em; color:var(--paper); line-height:1.15;}
+  @media (max-width:640px){ .brand .brand-text{font-size:0.78rem;} }
+  nav ul{list-style:none; display:flex; gap:1.6rem; font-size:0.85rem; font-family:'Jost';}
+  nav ul a:hover{color:var(--violet-bright);}
+  @keyframes spin{ to{ transform: rotate(360deg);} }
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:5px; }
+  .nav-toggle span{ display:block; width:24px; height:2px; background:var(--paper); border-radius:2px; }
+
+  section{padding: 5rem 5%; position:relative;}
+  .section-head{max-width:640px; margin-bottom:2.2rem;}
+  .section-head h2{font-size:clamp(1.9rem,4vw,2.7rem); margin-top:0.6rem;}
+  .section-head p{color:#b8aad4; margin-top:0.8rem; line-height:1.6;}
+  .section-head.center{ margin-left:auto; margin-right:auto; text-align:center; }
+
+  .btn{ display:inline-flex; align-items:center; gap:0.5rem; padding:0.9rem 1.7rem; border-radius:999px;
+        font-size:0.85rem; font-weight:600; letter-spacing:0.02em; transition: transform 0.25s ease; }
+  .btn-solid{background:linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#fff;}
+  .btn-solid:hover{transform:translateY(-2px);}
+  .btn-outline{border:1px solid var(--violet-bright); color:var(--violet-bright); background:transparent;}
+  .btn-outline:hover{background:rgba(201,162,39,0.12); transform:translateY(-2px);}
+
+  /* ===== HERO: QUOTE ===== */
+  .donate-hero{ text-align:center; padding-top:4.5rem; padding-bottom:2rem; }
+  .donate-hero blockquote{
+    font-family:'Playfair Display', serif; font-style:italic;
+    font-size:clamp(1.6rem,3.8vw,2.6rem); line-height:1.35;
+    color:var(--paper); max-width:780px; margin:1.2rem auto 0;
+  }
+  .donate-hero blockquote span{ color:var(--violet-bright); }
+
+  /* ===== QR / PAYMENT ===== */
+  .qr-section{ text-align:center; padding-top:1rem; }
+  .qr-box{
+    display:inline-flex; flex-direction:column; align-items:center; gap:1rem;
+    border:1px solid var(--gear-line); border-radius:24px; padding:2.2rem 2.6rem;
+    background: radial-gradient(circle at 30% 20%, rgba(201,162,39,0.14), transparent 60%);
+  }
+  .qr-box img{ width:200px; height:200px; border-radius:12px; background:#fff; padding:10px; }
+  .qr-box p{ color:#b8aad4; font-size:0.85rem; max-width:280px; }
+  .upi-line{ font-family:'Jost'; font-size:0.95rem; color:var(--violet-bright); margin-top:0.4rem; }
+  .payment-methods{ display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-top:1.6rem; }
+  .payment-chip{ border:1px solid var(--gear-line); border-radius:999px; padding:0.5rem 1.1rem; font-family:'Jost'; font-size:0.78rem; color:#c6b9e6; }
+
+  /* ===== IMPACT TIERS ===== */
+  .tiers-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; }
+  .tier-card{
+    border:1px solid var(--gear-line); border-radius:20px; padding:2rem 1.6rem; text-align:center;
+    background:rgba(47,27,77,0.32); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
+  .tier-card .amount{ font-family:'Jost'; font-size:1.7rem; font-weight:700; color:var(--paper); }
+  .tier-card p{ color:#c6b9e6; font-size:0.88rem; margin-top:0.6rem; line-height:1.5; }
+
+  /* ===== FUND ALLOCATION ===== */
+  .allocation-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:1.2rem; }
+  .alloc-card{ border:1px solid var(--gear-line); border-radius:16px; padding:1.6rem; text-align:center; background:rgba(47,27,77,0.28); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
+  .alloc-card .pct{ font-family:'Jost'; font-size:1.8rem; font-weight:700; color:var(--violet-bright); }
+  .alloc-card .label{ margin-top:0.4rem; color:#b8aad4; font-size:0.85rem; }
+  .alloc-bar{ height:8px; border-radius:999px; background:var(--gear-line); overflow:hidden; margin-top:2rem; display:flex; }
+
+  /* ===== TRUST NOTE ===== */
+  .trust-card{
+    display:flex; gap:1.4rem; align-items:flex-start;
+    border:1px solid var(--gear-line); border-radius:20px; padding:2rem;
+    background:rgba(47,27,77,0.28); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
+  .trust-card .icon{ flex:none; color:var(--violet-bright); }
+  .trust-card .icon svg{ width:32px; height:32px; }
+  .trust-card p{ color:#c6b9e6; font-size:0.92rem; line-height:1.7; }
+
+  /* ===== QUOTE BAND ===== */
+  .quote-band{ text-align:center; padding:2.4rem 5%; }
+  .quote-band p{ font-family:'Playfair Display', serif; font-style:italic; font-size:clamp(1.15rem,2.6vw,1.55rem);
+                 color:var(--violet-bright); max-width:720px; margin:0 auto; }
+
+  footer{ padding: 4rem 5% 2.4rem; border-top:1px solid var(--gear-line); background:rgba(23,17,6,0.55); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); }
+  .footer-box{ border:1px solid var(--gear-line); border-radius:20px; padding:2.4rem;
+               display:grid; grid-template-columns:1.2fr 1fr; gap:2rem; align-items:center; margin-bottom:2.4rem; }
+  .footer-box h3{ color:var(--violet-bright); font-size:1.3rem; }
+  .footer-box .contact-line{ margin-top:0.5rem; color:#c6b9e6; font-size:0.92rem; }
+  .social-icons{ display:flex; gap:1rem; justify-content:flex-end; }
+  .social-icons a{ width:46px; height:46px; border-radius:50%; border:1px solid var(--gear-line);
+                    display:flex; align-items:center; justify-content:center;
+                    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease; }
+  .social-icons a:hover{ transform:translateY(-3px); background:rgba(201,162,39,0.15); border-color:var(--violet-bright); }
+  .social-icons svg{ width:20px; height:20px; fill:var(--lilac); }
+  .foot-bottom{ text-align:center; color:#6f5f92; font-size:0.8rem; }
+
+  .modal-overlay{ position:fixed; inset:0; background:rgba(13,6,24,0.82); backdrop-filter:blur(4px);
+                  display:none; align-items:center; justify-content:center; z-index:200; padding:2rem; }
+  .modal-overlay.active{ display:flex; }
+  .modal-box{ background:linear-gradient(160deg, var(--violet-deep), var(--ink)); border:1px solid var(--gear-line);
+              border-radius:22px; max-width:460px; width:100%; padding:2.2rem; position:relative;
+              max-height:85vh; overflow-y:auto;  backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);}
+  .modal-close{ position:absolute; top:1.1rem; right:1.1rem; width:34px; height:34px; border-radius:50%;
+                background:rgba(201,162,39,0.15); color:var(--violet-bright); display:flex; align-items:center;
+                justify-content:center; font-size:1.1rem; cursor:pointer; }
+  .modal-box h3{ font-size:1.3rem; }
+  .modal-box .meta{ color:var(--violet-bright); font-size:0.85rem; font-family:'Jost'; margin:0.3rem 0 1rem; }
+  .modal-box p{ color:#c6b9e6; line-height:1.7; font-size:0.92rem; }
+
+  @media (max-width: 860px){
+    .nav-toggle{ display:flex; }
+    nav ul{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:rgba(13,6,24,0.97);
+      border-bottom:1px solid var(--gear-line); padding:0.5rem 0;
+    }
+    nav ul.open{ display:flex; }
+    nav ul li{ padding:0.9rem 5%; border-top:1px solid var(--gear-line); }
+    nav ul li:first-child{ border-top:none; }
+    .tiers-grid{ grid-template-columns:1fr; }
+    .allocation-grid{ grid-template-columns:1fr 1fr; }
+    .footer-box{ grid-template-columns:1fr; }
+    .social-icons{ justify-content:flex-start; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<nav>
+  <div class="brand" onclick="window.location.href='index.html'" title="Go to Home" style="cursor:pointer;">
+    <img class="logo-img" src="assets/srcas-logo.png" alt="Rotaract Club of Sri Ramakrishna College of Arts and Science">
+    <span class="brand-text">Rotaract Club of SRCAS</span>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About Us</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="join.html">Join</a></li>
+  </ul>
+</nav>
+
+<!-- ================================================================
+     HERO — beautiful quote
+     👉 CONTENT: edit the quote text inside the <blockquote>.
+================================================================= -->
+<section class="donate-hero">
+  <span class="eyebrow">Give what you can</span>
+  <blockquote>"Every rupee you give becomes someone else's <span>tree planted</span>, <span>meal shared</span>, or <span>chance taken</span>."</blockquote>
+</section>
+
+<!-- ================================================================
+     PAYMENT QR CODE
+     👉 CONTENT: replace the "data=" link inside the QR image URL
+        below with your real payment link (UPI deep link, PayPal,
+        Razorpay page, etc.) — the QR code updates automatically.
+     👉 CONTENT: also update the UPI ID / bank details text under it.
+================================================================= -->
+<section class="qr-section">
+  <div class="section-head center">
+    <span class="eyebrow">Scan to donate</span>
+    <h2>Support Our Work</h2>
+  </div>
+  <div class="qr-box">
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=upi://pay?pa=rotaractcoimbatore@upi%26pn=Rotaract%20Club%20of%20Coimbatore" alt="QR code to donate">
+    <div class="upi-line">UPI: rotaractcoimbatore@upi</div>
+    <p>Scan with any UPI app (GPay, PhonePe, Paytm) to donate directly — no fees, no middleman.</p>
+  </div>
+  <div class="payment-methods">
+    <span class="payment-chip">UPI</span>
+    <span class="payment-chip">Bank Transfer</span>
+    <span class="payment-chip">Cash (in person)</span>
+  </div>
+</section>
+
+<!-- ================================================================
+     WHAT YOUR DONATION DOES — impact tiers
+     👉 CONTENT: edit the 3 amounts and what each one funds.
+================================================================= -->
+<section id="impact-tiers">
+  <div class="section-head">
+    <span class="eyebrow">Where it goes</span>
+    <h2>What Your Donation Does</h2>
+  </div>
+  <div class="tiers-grid">
+    <div class="tier-card">
+      <div class="amount">₹500</div>
+      <p>Supplies a full school kit — books, a bag, and stationery — for one child at our education drives.</p>
+    </div>
+    <div class="tier-card">
+      <div class="amount">₹1,500</div>
+      <p>Covers screening and basic medicine for 3 families at a health camp.</p>
+    </div>
+    <div class="tier-card">
+      <div class="amount">₹5,000</div>
+      <p>Plants and maintains 50 saplings for a full year through our environment projects.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FUND ALLOCATION — where the money is split
+     👉 CONTENT: edit the 4 percentages and labels below.
+================================================================= -->
+<section id="fund-allocation">
+  <div class="section-head">
+    <span class="eyebrow">Full transparency</span>
+    <h2>How Funds Are Split</h2>
+    <p>Every donation is logged and reviewed by the board each quarter.</p>
+  </div>
+  <div class="allocation-grid">
+    <div class="alloc-card"><div class="pct">45%</div><div class="label">Community Service Projects</div></div>
+    <div class="alloc-card"><div class="pct">25%</div><div class="label">Education &amp; Health Drives</div></div>
+    <div class="alloc-card"><div class="pct">20%</div><div class="label">Environment Initiatives</div></div>
+    <div class="alloc-card"><div class="pct">10%</div><div class="label">Admin &amp; Operations</div></div>
+  </div>
+</section>
+
+<!-- CONTENT: quote #2 -->
+<div class="quote-band">
+  <p>"We don't ask for charity. We ask for a share in the work."</p>
+</div>
+
+<!-- ================================================================
+     TRUST / TRANSPARENCY NOTE
+     👉 CONTENT: edit the trust statement below.
+================================================================= -->
+<section id="trust-note" style="padding-top:1rem;">
+  <div class="trust-card">
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
+    <p>All donations to Rotaract Club of Coimbatore are routed through our sponsoring Rotary club's registered account and recorded in our monthly bulletin. Receipts are issued on request, and our treasurer shares a full spend report at every Annual General Meeting. For donations above ₹10,000, or for corporate CSR partnerships, reach out directly at <b style="color:var(--paper)">hello@rotaractcoimbatore.org</b>.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-box">
+    <div>
+      <h3>Rotaract Club of SRCAS</h3>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:racsrcas3206@gmail.com" style="color:inherit;text-decoration:none;">racsrcas3206@gmail.com</a></div>
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.5 1 1 0 01-.25 1z"/></svg><a href="tel:+919942038045" style="color:inherit;text-decoration:none;">+91 99420 38045</a></div>
+    </div>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/rotaractsrcas/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>
+      </a>
+      <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+      </a>
+      <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+        <svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78L17.75 3zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45z"/></svg>
+      </a>
+    </div>
+  </div>
+  <p class="foot-bottom">© 2026 Rotaract Club of SRCAS. Service Above Self.</p>
+</footer>
+
+<script>
+  // Mobile hamburger menu
+  function toggleNav(){ document.getElementById('nav-links').classList.toggle('open'); }
+  document.querySelectorAll('#nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> document.getElementById('nav-links').classList.remove('open'));
+  });
+
+  // 👉 CONTENT: keep this the same as startYear on the other pages
+  const startYear = 1975;
+</script>
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>

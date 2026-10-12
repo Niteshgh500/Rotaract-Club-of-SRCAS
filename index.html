@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>Rotaract Club of SRCAS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black: #0d0618;
+    --ink: #1c0f2e;
+    --violet-deep: #2f1b4d;
+    --violet-mid: #5b3a8f;
+    --violet-accent: #c9a227;
+    --violet-bright: #f0c75e;
+    --lilac: #e3d1fa;
+    --paper: #f7f1e3;
+    --gear-line: rgba(240,199,94,0.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background: var(--black);
+    color: var(--paper);
+    font-family: 'EB Garamond', sans-serif;
+    overflow-x:hidden;
+  }
+  h1,h2,h3, .display{
+    font-family: 'Playfair Display', serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .eyebrow{
+    font-family:'Jost', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.28em;
+    font-size:0.72rem;
+    color: var(--violet-bright);
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:'Jost', sans-serif; cursor:pointer; border:none;}
+
+  /* Background gear texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(201,162,39,0.16), transparent 40%),
+      radial-gradient(circle at 85% 75%, rgba(201,162,39,0.12), transparent 45%),
+      linear-gradient(180deg, #0d0618 0%, #1c0f2e 100%);
+    z-index:-2;
+  }
+
+  /* NAV */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 1.1rem 5%;
+    background: rgba(13,6,24,0.72);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--gear-line);
+  }
+  .brand{display:flex; align-items:center; gap:0.6rem; font-family:'Jost'; font-weight:700; letter-spacing:0.02em;}
+  .brand .gear{width:34px; height:34px; animation: spin 12s linear infinite;}
+  .brand .logo-img{height:48px; width:auto; display:block; border-radius:4px;}
+  .brand .brand-text{font-family:'Jost',sans-serif; font-weight:700; font-size:0.95rem; letter-spacing:0.02em; color:var(--paper); line-height:1.15;}
+  @media (max-width:640px){ .brand .brand-text{font-size:0.78rem;} }
+  nav ul{list-style:none; display:flex; gap:2rem; font-size:0.85rem; font-family:'Jost';}
+  nav ul a:hover{color:var(--violet-bright);}
+  .nav-toggle{display:none;}
+
+  @keyframes spin{ to{ transform: rotate(360deg);} }
+
+  /* HERO */
+  .hero{
+    position:relative;
+    min-height:92vh;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    padding: 6rem 5% 0;
+    overflow:hidden;
+  }
+  .hero-photos{
+    position:absolute; inset:0;
+    opacity:0.55;
+  }
+  .hero-photos img{width:100%; height:100%; object-fit:cover; filter: grayscale(15%) contrast(1.05);}
+  .hero-overlay{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(13,6,24,0.35) 0%, rgba(13,6,24,0.55) 55%, var(--black) 96%);
+  }
+  .hero-content{position:relative; z-index:2; max-width:820px; padding-bottom:3.2rem;}
+  .hero-content h1{font-size: clamp(2.4rem, 6vw, 4.6rem); line-height:1.03; color:var(--paper);}
+  .hero-content h1 em{font-style:italic; color:var(--violet-bright);}
+  .hero-content p{margin-top:1.1rem; max-width:520px; color:#cabfe6; font-size:1.02rem;}
+
+  /* Announcements ticker */
+  .ticker-wrap{
+    position:relative; z-index:2;
+    border-top:1px solid var(--gear-line);
+    background: rgba(47,27,77,0.55); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    overflow:hidden;
+    white-space:nowrap;
+    padding:0.7rem 0;
+  }
+  .ticker{
+    display:inline-block;
+    padding-left:100%;
+    animation: ticker 28s linear infinite;
+    font-family:'Jost';
+    font-size:0.86rem;
+    color: var(--lilac);
+  }
+  .ticker span{margin-right:3rem;}
+  .ticker span::before{content:"◆ "; color:var(--violet-bright);}
+  @keyframes ticker{ 0%{transform:translateX(0);} 100%{transform:translateX(-100%);} }
+
+  section{padding: 6.5rem 5%; position:relative;}
+  .section-head{max-width:640px; margin-bottom:2.8rem;}
+  .section-head h2{font-size:clamp(1.9rem,4vw,2.8rem); margin-top:0.6rem; color:var(--paper);}
+  .section-head p{color:#b8aad4; margin-top:0.8rem; line-height:1.6;}
+
+  .btn{
+    display:inline-flex; align-items:center; gap:0.5rem;
+    padding: 0.9rem 1.7rem;
+    border-radius:999px;
+    font-size:0.85rem; font-weight:600;
+    letter-spacing:0.02em;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+  .btn-solid{background: linear-gradient(135deg, var(--violet-accent), var(--violet-mid)); color:#fff;}
+  .btn-solid:hover{transform:translateY(-2px);}
+  .btn-outline{border:1px solid var(--violet-bright); color:var(--violet-bright); background:transparent;}
+  .btn-outline:hover{background:rgba(201,162,39,0.12); transform:translateY(-2px);}
+
+  /* ABOUT */
+  .about-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap:3rem; align-items:center;
+  }
+  .about-photos{
+    display:grid; grid-template-columns:1fr 1fr; gap:0.9rem;
+  }
+  .about-photos img{border-radius:14px; border:1px solid var(--gear-line);}
+  .about-photos img:first-child{grid-row:span 2; height:100%; object-fit:cover;}
+  .about-text .eyebrow{margin-bottom:0.8rem; display:block;}
+  .about-text p{color:#c6b9e6; line-height:1.75; margin:1.1rem 0 1.8rem;}
+  .about-grid.reverse{grid-template-columns: 1fr 1fr;}
+  .about-grid.reverse .about-photos{order:2;}
+
+  /* ROTARACT MEANING */
+  .meaning-wrap{
+    display:grid; grid-template-columns: 0.9fr 1.1fr; gap:3.5rem;
+    background: linear-gradient(145deg, var(--violet-deep), var(--ink));
+    border:1px solid var(--gear-line);
+    border-radius:28px;
+    padding: 3.2rem;
+  }
+  .meaning-word{font-size:clamp(2.2rem,5vw,3.4rem); color:var(--violet-bright); line-height:1.05;}
+  .meaning-word span{display:block; font-size:1rem; font-family:'Jost'; color:#a993d6; margin-top:0.6rem; text-transform:none; letter-spacing:0;}
+  .history-box h3{font-size:1.1rem; color:var(--lilac); margin-bottom:0.7rem;}
+  .history-box p{color:#c6b9e6; line-height:1.75; margin-bottom:1.6rem;}
+
+  /* TEAM — podium layout: President centered on top, then two rows
+     of two members each, flanking left and right below */
+  .team-podium{ display:flex; flex-direction:column; align-items:center; gap:2rem; }
+  .podium-tier{ display:flex; justify-content:center; gap:1.6rem; flex-wrap:wrap; }
+  .podium-tier-1 .member-label b{ font-size:1.15rem; }
+  .podium-tier-1 .crown-icon{ display:block; text-align:center; margin-bottom:0.6rem; color:var(--violet-bright); }
+  .podium-tier-1 .crown-icon svg{ width:28px; height:28px; }
+  .member-card{
+    position:relative; border-radius:18px; overflow:hidden; cursor:pointer;
+    border:1px solid var(--gear-line);
+    transition: transform 0.3s ease;
+    width:252px;
+  }
+  .member-card:hover{transform:translateY(-6px);}
+  .member-photo-wrap{ position:relative; }
+  .member-photo-wrap img{width:252px; height:485px; aspect-ratio:252/485; object-fit:cover; display:block;}
+  .member-label{
+    position:absolute; left:0; right:0; bottom:0;
+    padding:1rem;
+    background: linear-gradient(0deg, rgba(13,6,24,0.92), transparent);
+  }
+  .member-label b{font-family:'Jost'; font-size:0.95rem;}
+  .member-label small{display:block; color:var(--violet-bright); font-size:0.75rem; margin-top:2px;}
+  .member-socials{ display:flex; gap:0.6rem; padding:0.8rem 1rem; background:var(--ink); position:relative; z-index:1; }
+  .member-socials a{ width:32px; height:32px; border-radius:50%; border:1px solid var(--gear-line);
+                      display:flex; align-items:center; justify-content:center;
+                      transition: background 0.2s ease, border-color 0.2s ease; }
+  .member-socials a:hover{ background:rgba(201,162,39,0.15); border-color:var(--violet-bright); }
+  .member-socials svg{ width:15px; height:15px; fill:var(--lilac); }
+  .team-more{text-align:center; margin-top:2.6rem;}
+
+  /* SLOGAN BAND */
+  .slogan-band{
+    text-align:center;
+    padding: 4rem 5%;
+    border-top:1px solid var(--gear-line);
+    border-bottom:1px solid var(--gear-line);
+  }
+  .slogan-band p{
+    font-family:'Playfair Display', serif; font-style:italic;
+    font-size:clamp(1.3rem,3.4vw,2.1rem);
+    color:var(--violet-bright);
+    max-width:800px; margin:0 auto;
+  }
+
+  /* SERVICE STATS */
+  .stats-row{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1.6rem;
+  }
+  .stat-card{
+    border:1px solid var(--gear-line);
+    border-radius:20px;
+    padding:2.2rem 1.6rem;
+    text-align:center;
+    background: rgba(47,27,77,0.35); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    cursor:pointer;
+  }
+  .stat-card .num{font-family:'Jost'; font-size:2.6rem; font-weight:700; color:var(--paper);}
+  .stat-card .num small{font-size:1rem; color:var(--violet-bright); display:block; font-weight:500; margin-top:0.3rem;}
+  .stat-card .label{margin-top:0.6rem; color:#b8aad4; font-size:0.9rem;}
+  .stat-hint{font-size:0.72rem; color:#8b7bab; margin-top:0.8rem;}
+  .stats-row-2{grid-template-columns:repeat(2,1fr);}
+  @media(max-width:640px){ .stats-row-2{grid-template-columns:1fr;} }
+
+  .timeline-item{ display:flex; gap:1rem; padding:0.9rem 0; border-bottom:1px solid var(--gear-line); }
+  .timeline-item:last-child{ border-bottom:none; }
+  .timeline-item .yr{ font-family:'Jost'; font-weight:700; color:var(--violet-bright); min-width:52px; }
+  .timeline-item .desc{ color:#c6b9e6; font-size:0.9rem; line-height:1.6; }
+
+  /* JOIN */
+  .join-wrap{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:3rem; align-items:center;
+    background: radial-gradient(circle at 30% 30%, rgba(201,162,39,0.16), transparent 60%);
+    border:1px solid var(--gear-line);
+    border-radius:28px;
+    padding:3.4rem;
+  }
+  .join-wrap h2{font-size:clamp(2rem,4.4vw,3rem);}
+  .join-wrap ul{margin-top:1.4rem; color:#c6b9e6; line-height:2;}
+  .join-wrap ul li::before{content:"◆ "; color:var(--violet-bright);}
+  .join-actions{margin-top:2rem;}
+
+  /* EVENTS */
+  .events-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1.4rem;
+    margin-bottom:2.6rem;
+  }
+  .event-card{
+    border-radius:18px; overflow:hidden; border:1px solid var(--gear-line);
+    cursor:pointer; position:relative;
+    transition: transform 0.3s ease;
+  }
+  .event-card:hover{transform:translateY(-6px);}
+  .event-card img{width:100%; height:auto; display:block;}
+  .event-info{padding:1rem 1.1rem; background:var(--ink);}
+  .event-info b{font-family:'Jost'; font-size:0.95rem;}
+  .event-info small{color:var(--violet-bright); font-size:0.75rem;}
+  .events-cta{text-align:center;}
+  .badge{position:absolute; top:0.7rem; left:0.7rem; padding:0.3rem 0.7rem; border-radius:999px;
+         font-family:'Jost'; font-size:0.68rem; font-weight:700; letter-spacing:0.03em; z-index:2;}
+  .badge.upcoming{background:var(--violet-accent); color:#fff;}
+  .badge.recent{background:rgba(13,6,24,0.7); color:var(--lilac); border:1px solid var(--gear-line);}
+  .modal-box .group-label{font-family:'Jost'; font-size:0.75rem; color:var(--violet-bright);
+                           text-transform:uppercase; letter-spacing:0.1em; margin:1.2rem 0 0.5rem;}
+  .modal-box img.event-poster-img{ height:auto; max-height:75vh; object-fit:contain; }
+  .event-detail-rows{display:flex; flex-wrap:wrap; gap:1.4rem; margin-top:1.1rem; padding-top:1rem; border-top:1px solid var(--gear-line);}
+  .detail-row{display:flex; align-items:center; gap:0.5rem; color:#c6b9e6; font-family:'Jost'; font-size:0.85rem;}
+  .detail-row svg{width:16px; height:16px; color:var(--violet-bright); flex-shrink:0;}
+
+  /* CONNECT / FORMS */
+  .connect-wrap{
+    display:grid; grid-template-columns:1fr 1fr; gap:3rem;
+  }
+  .form-card{
+    border:1px solid var(--gear-line);
+    border-radius:20px;
+    padding:2.2rem;
+    background: rgba(47,27,77,0.3); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  }
+  .form-card h3{color:var(--lilac); margin-bottom:1.4rem; font-size:1.15rem;}
+  .field{margin-bottom:1.1rem;}
+  .field label{display:block; font-size:0.78rem; font-family:'Jost'; color:#a993d6; margin-bottom:0.4rem; letter-spacing:0.03em;}
+  .field input, .field textarea{
+    width:100%; padding:0.8rem 1rem; border-radius:10px;
+    background:var(--black); border:1px solid var(--gear-line); color:var(--paper);
+    font-family:'EB Garamond'; font-size:0.92rem;
+  }
+  .field textarea{resize:vertical; min-height:100px;}
+  .form-note{font-size:0.78rem; color:#8b7bab; margin-top:0.9rem;}
+
+  /* FAQ */
+  .faq-item{border-bottom:1px solid var(--gear-line); padding:1.3rem 0;}
+  .faq-q{display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-family:'Jost'; font-size:1rem;}
+  .faq-q .plus{transition: transform 0.25s ease; color:var(--violet-bright); font-size:1.3rem;}
+  .faq-item.open .plus{transform:rotate(45deg);}
+  .faq-a{max-height:0; overflow:hidden; transition: max-height 0.35s ease; color:#b8aad4; line-height:1.7; font-size:0.92rem;}
+  .faq-item.open .faq-a{max-height:220px; margin-top:0.9rem;}
+
+  /* FOOTER */
+  footer{
+    padding: 4rem 5% 2.4rem;
+    border-top:1px solid var(--gear-line);
+    background: rgba(23,17,6,0.55); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  }
+  .footer-box{
+    border:1px solid var(--gear-line);
+    border-radius:20px;
+    padding:2.4rem;
+    display:grid; grid-template-columns:1.2fr 1fr 1fr;
+    gap:2rem;
+    margin-bottom:2.4rem;
+  }
+  .footer-box h3{color:var(--violet-bright); font-size:1.3rem;}
+  .footer-box .contact-line{margin-top:0.5rem; color:#c6b9e6; font-size:0.92rem;}
+  .socials{display:flex; flex-direction:column; gap:0.9rem;}
+  .social-icons{display:flex; gap:0.9rem;}
+  .social-icons a{
+    width:44px; height:44px; border-radius:50%;
+    border:1px solid var(--gear-line);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+  }
+  .social-icons a:hover{transform:translateY(-3px); background:rgba(201,162,39,0.15); border-color:var(--violet-bright);}
+  .social-icons svg{width:19px; height:19px; fill:var(--lilac);}
+  .foot-bottom{text-align:center; color:#6f5f92; font-size:0.8rem;}
+
+  /* MODAL */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(13,6,24,0.82); backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:200; padding:2rem;
+  }
+  .modal-overlay.active{display:flex;}
+  .modal-box{
+    background: linear-gradient(160deg, var(--violet-deep), var(--ink));
+    border:1px solid var(--gear-line);
+    border-radius:22px;
+    max-width:520px; width:100%;
+    padding:2.2rem;
+    position:relative;
+    max-height:85vh; overflow-y:auto;
+   backdrop-filter:blur(22px); -webkit-backdrop-filter:blur(22px);}
+  .modal-box img{border-radius:14px; margin-bottom:1.2rem; width:100%; object-fit:cover; max-height:280px;}
+  .modal-close{
+    position:absolute; top:1.1rem; right:1.1rem;
+    width:34px; height:34px; border-radius:50%;
+    background:rgba(201,162,39,0.15); color:var(--violet-bright);
+    display:flex; align-items:center; justify-content:center; font-size:1.1rem;
+  }
+  .modal-box h3{color:var(--paper); font-size:1.3rem;}
+  .modal-box .role{color:var(--violet-bright); font-size:0.85rem; font-family:'Jost'; margin:0.3rem 0 1rem;}
+  .modal-box p{color:#c6b9e6; line-height:1.7; font-size:0.92rem;}
+
+  .nav-toggle{ display:none; background:none; border:none; cursor:pointer; padding:0.4rem; flex-direction:column; gap:5px; }
+  .nav-toggle span{ display:block; width:24px; height:2px; background:var(--paper); border-radius:2px; }
+
+  @media (max-width: 860px){
+    .nav-toggle{ display:flex; }
+    nav ul{
+      display:none; position:absolute; top:100%; left:0; right:0;
+      flex-direction:column; gap:0; background:rgba(13,6,24,0.97);
+      border-bottom:1px solid var(--gear-line); padding:0.5rem 0;
+    }
+    nav ul.open{ display:flex; }
+    nav ul li{ padding:0.9rem 5%; border-top:1px solid var(--gear-line); }
+    nav ul li:first-child{ border-top:none; }
+    .about-grid, .about-grid.reverse, .meaning-wrap, .join-wrap, .connect-wrap{grid-template-columns:1fr;}
+    .about-grid.reverse .about-photos{order:0;}
+    .stats-row{grid-template-columns:1fr;}
+    .footer-box{grid-template-columns:1fr;}
+    .member-card, .member-photo-wrap img{ width:150px; height:auto; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<!-- ================================================================
+     NAV BAR — logo only (no text), click it to go to the Home page.
+     Menu links auto-scroll to each section.
+================================================================= -->
+<nav id="top">
+  <div class="brand" onclick="window.location.href='index.html'" title="Go to Home" style="cursor:pointer;">
+    <img class="logo-img" src="assets/srcas-logo.png" alt="Rotaract Club of Sri Ramakrishna College of Arts and Science">
+    <span class="brand-text">Rotaract Club of SRCAS</span>
+  </div>
+  <button class="nav-toggle" onclick="toggleNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-links">
+    <li><a href="#top">Home</a></li>
+    <li><a href="about.html" target="_blank" rel="noopener">About Us</a></li>
+    <li><a href="team.html">Team</a></li>
+    <li><a href="events.html">Events</a></li>
+    <li><a href="courses.html">Courses</a></li>
+    <li><a href="games.html">Games</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="join.html">Join</a></li>
+  </ul>
+</nav>
+
+<!-- ================================================================
+     HERO SECTION (top banner)
+     👉 PIC: replace the single src="..." link below with your own
+        club group photo (upload it somewhere like imgur/your own
+        server, or use a local file e.g. src="images/hero.jpg").
+     👉 CONTENT: change the eyebrow text (small line above heading),
+        the big heading, and the paragraph under it.
+================================================================= -->
+<header class="hero">
+  <div class="hero-photos">
+    <!-- PIC: main hero/banner photo goes here -->
+    <img src="group/reawaken-home.jpg" alt="Rotaract Club of SRCAS board with guests at the Reawaken 34th Installation Ceremony">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <span class="eyebrow"><!-- CONTENT: club name/tagline --> Rotaract Club of SRCAS</span>
+    <h1><!-- CONTENT: main headline -->Young hands, <em>real</em> service.</h1>
+    <p><!-- CONTENT: short intro paragraph -->A community of young leaders turning good intentions into finished projects — one Thursday meeting, one clean-up drive, one scholarship at a time.</p>
+  </div>
+</header>
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>Serve and Savor — Charter Day celebration at High For This, 9th October</span>
+    <span>Special Meeting — Club Officials Board Meeting, 30th September</span>
+    <span>World Tourism Day — nature walk at Semmozhi Poonga, 27th September</span>
+    <span>Treasure Hunt across SRCAS — 25th September</span>
+    <span>Fun Race at Race Course &amp; "Beyond the Burnout" wellness session — 19th September</span>
+    <span>Safe Rise Edition 2 — speed breakers painted across Coimbatore, 10th September</span>
+    <span>Heros at Dark — tea for night-shift security &amp; workers, 9th September</span>
+    <span>Reflective Stickers drive — Small Sticker. Big Safety. 3rd September</span>
+    <span>Tax Decoded session with Dr. M. Devipriya — 31st August</span>
+  </div>
+</div>
+
+<!-- ABOUT US -->
+<!-- ================================================================
+     ABOUT US SECTION
+     👉 PIC: 3 photos below (1 tall + 2 small) — replace all 3 src="..."
+     👉 CONTENT: "Who we are" tag, "About Us" heading, and the paragraph
+================================================================= -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-photos">
+      <!-- PIC 1 (tall, left column) -->
+      <img src="group/2.jpg"alt="Members at a project">
+      <!-- PIC 2 (small, top right) -->
+      <img src="group/rise-of-resurgence.jpg" alt="Rise of Resurgence banner unveiling with President Rtr. Mohan Prabhu and guests">
+      <!-- PIC 3 (small, bottom right) -->
+      <img src="group/reawaken-board-gift.jpg" alt="President Rtr. Mohan Prabhu with board members at the Reawaken installation ceremony">
+    </div>
+    <div class="about-text">
+      <span class="eyebrow"><!-- CONTENT: small tag line -->Who we are</span>
+      <h2>About Us</h2>
+      <!-- CONTENT: main About Us paragraph -->
+      <p>We're a club of students and young professionals who believe service works better when it's done together. Since our charter, we've run health camps, taught in under-resourced schools, planted forests, and built friendships that outlast any single project. Every member brings a different skill — we just point them at the same problems.</p>
+      <a href="about.html" target="_blank" rel="noopener" class="btn btn-solid">Explore More About Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     WHAT IS ROTARACT — no photos here, just text.
+     👉 CONTENT: the short meaning line, and the short history paragraph
+        (the LONGER version is further down in the "history-modal"
+        popup — search for id="history-modal")
+================================================================= -->
+<section id="rotaract">
+  <div class="meaning-wrap">
+    <div>
+      <span class="eyebrow">The name, explained</span>
+      <div class="meaning-word" style="margin-top:1rem;">
+        Ro·ta·ract
+        <!-- CONTENT: one-line meaning of the name -->
+        <span>Rotary + Interact — a Rotary-sponsored club for people aged 18–30, built on leadership, fellowship, and hands-on service.</span>
+      </div>
+    </div>
+    <div class="history-box">
+      <h3>A short history</h3>
+      <!-- CONTENT: short history paragraph -->
+      <p>Our club was instituted in our college premises by the initiative of our honorable Principal and Secretary, Dr.V.Sengodan. Our club has the privilege of being the 1s club in the history of Rotaraction in the RI District 3200, of being installed by the Rotary Governor. This club was charted on October 6, 2006. Our first President was Rtr. M.Karunakaran, followed by Rtr. Murali Krishna, who led the club for the second year. Our club has won many individual awards at district fellowship, group III forum and all other events. We organized several events for the welfare of the society and the members of the club. We look forward in continuing our
+good show in the future also.</p>
+      <a href="#" class="btn btn-outline" onclick="openModal('history-modal'); return false;">Learn Meaning &amp; History</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     TEAM SECTION — podium layout
+     👉 PIC + CONTENT: this section is built by JavaScript from a
+        list near the bottom of the page. Scroll down to the
+        <script> tag and find "const team = [ ... ]" — each line
+        there is one member's photo (img), name, role, and bio.
+        Order matters here: the 1st entry becomes the top-centre
+        "podium" card, the 2nd and 3rd become the row below it, and
+        the 4th and 5th become the row below that.
+================================================================= -->
+<section id="team">
+  <div class="section-head">
+    <span class="eyebrow">The people behind the projects</span>
+    <h2>Team Members</h2>
+    <p>Tap a poster to meet them — what they lead, what they studied, why they joined.</p>
+  </div>
+  <div class="team-podium">
+    <div class="podium-tier podium-tier-1" id="podium-tier-1"></div>
+    <div class="podium-tier podium-tier-2" id="podium-tier-2"></div>
+    <div class="podium-tier podium-tier-3" id="podium-tier-3"></div>
+  </div>
+  <div class="team-more">
+    <a href="team.html" class="btn btn-outline">More Members</a>
+  </div>
+</section>
+
+<!-- CONTENT: slogan #1 — short italic tagline -->
+<div class="slogan-band">
+  <p>"Service above self — starting with the person next to you."</p>
+</div>
+
+<!-- ================================================================
+     RECENT EVENTS SECTION
+     👉 PIC (posters): built from JavaScript — search for
+        "const events = [ ... ]" further down to edit each event's
+        photo, name, date, and description.
+     👉 PIC (group photo below the posters): replace src="..." right
+        below in this section.
+================================================================= -->
+<!-- ================================================================
+     RECENT & UPCOMING EVENTS SECTION
+     👉 PIC (posters + each event's own group photo): built from
+        JavaScript — search for "const events = [ ... ]" further down.
+        Each event has its own poster (img) AND its own group photo
+        (groupImg), shown together when that poster is tapped.
+================================================================= -->
+<section id="events">
+  <div class="section-head">
+    <span class="eyebrow">What's been happening — and what's next</span>
+    <h2>Recent &amp; Upcoming Events</h2>
+    <p>Tap a poster for the full story, plus the group photo from that day.</p>
+  </div>
+  <div class="events-grid" id="events-grid"></div>
+  <div class="events-cta">
+    <a href="events.html" class="btn btn-outline">View More</a>
+  </div>
+</section>
+
+<!-- ================================================================
+     IMPACT STATS — number of services & annual projects
+     👉 CONTENT: the two numbers below (4 and 11+) are placeholders —
+        swap them for the club's real figures.
+================================================================= -->
+<section id="impact">
+  <div class="section-head" style="margin-left:auto; margin-right:auto; text-align:center;">
+    <span class="eyebrow">What we run, year after year</span>
+    <h2>Our Impact</h2>
+  </div>
+  <div class="stats-row stats-row-2">
+    <div class="stat-card">
+      <div class="num">4<small>Focus Areas</small></div>
+      <div class="label">Number of Services</div>
+      <div class="stat-hint">Health · Education · Environment · Community Development</div>
+    </div>
+    <div class="stat-card">
+      <div class="num">11+<small>Every Year</small></div>
+      <div class="label">Annual Projects</div>
+      <div class="stat-hint">New projects planned and run each service year</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     COMMUNITY CONNECT (form) + FAQ — no photos here
+     👉 CONTENT: form field labels/placeholders below can be edited
+        directly. FAQ questions/answers are built from JavaScript —
+        search for "const faqs = [ ... ]" further down to edit them.
+     ⚠️ Note: this form does not actually send an email yet — it just
+        shows a "Sent — thank you!" message. Tell me if you want it
+        wired up to a real inbox.
+================================================================= -->
+<!-- ================================================================
+     JOIN / "WHY JOIN US" SECTION
+     👉 PIC: 1 photo on the right side, replace src="..." below
+     👉 CONTENT: heading, the 4 bullet points, button text
+================================================================= -->
+<section id="join">
+  <div class="join-wrap">
+    <div>
+      <span class="eyebrow">Be part of something greater</span>
+      <h2>Why Join Us?</h2>
+      <!-- CONTENT: reasons to join, one <li> per line -->
+      <ul>
+        <li>Lead real projects, not just attend them</li>
+        <li>Build a network across cities and countries</li>
+        <li>Learn leadership by actually practicing it</li>
+        <li>Turn a free Saturday into something that matters</li>
+      </ul>
+      <div class="join-actions">
+        <a href="#" class="btn btn-solid" onclick="openModal('join-modal'); return false;">Fill the Membership Form</a>
+      </div>
+    </div>
+    <div>
+      <!-- PIC: photo next to "Why Join Us" -->
+      <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=60" alt="Members volunteering" style="border-radius:20px; border:1px solid var(--gear-line);">
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT: slogan #2 — short italic tagline -->
+<div class="slogan-band">
+  <p>"We don't wait for someday. We show up on Saturday."</p>
+</div>
+
+<!-- ================================================================
+     COMMUNITY CONNECT — last section on the page
+================================================================= -->
+<section id="connect">
+  <div class="connect-wrap">
+    <div class="form-card">
+      <h3>Community Connect</h3>
+      <form id="connect-form" onsubmit="return handleForm(event,'connect')">
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" required placeholder="e.g. Ananya Raj">
+        </div>
+        <div class="field">
+          <label>Email ID</label>
+          <input type="email" required placeholder="you@email.com">
+        </div>
+        <div class="field">
+          <label>Suggestion or Question</label>
+          <textarea required placeholder="Tell us what's on your mind..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-solid">Send</button>
+        <p class="form-note">We read every message — expect a reply within a few days.</p>
+      </form>
+    </div>
+
+    <div>
+      <div class="section-head" style="margin-bottom:1.4rem;">
+        <span class="eyebrow">Before you ask</span>
+        <h2 style="font-size:1.8rem;">Frequently Asked Questions</h2>
+      </div>
+      <div id="faq-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FOOTER
+     👉 CONTENT: club name, chartering line, email, phone, all three
+        social links (Instagram / LinkedIn / Facebook — just replace
+        the text AND put the real link in href="#"), meeting day/time,
+        meeting location. No photos in the footer.
+================================================================= -->
+<footer>
+  <div class="footer-box">
+    <div>
+      <h3>Rotaract Club of SRCAS</h3>
+      <!-- CONTENT: club email -->
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><a href="mailto:racsrcas3206@gmail.com" style="color:inherit;text-decoration:none;">racsrcas3206@gmail.com</a></div>
+      <!-- CONTENT: club phone number -->
+      <div class="contact-line"><svg style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--violet-bright)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8a15.9 15.9 0 006.6 6.6l2.2-2.2a1 1 0 011-.25 11 11 0 003.5.56 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11 11 0 00.56 3.5 1 1 0 01-.25 1z"/></svg><a href="tel:+919942038045" style="color:inherit;text-decoration:none;">+91 99420 38045</a></div>
+    </div>
+    <div class="socials">
+      <span class="eyebrow" style="margin-bottom:0.4rem;">Follow along</span>
+      <!-- CONTENT: replace href="#" with your real profile links -->
+      <div class="social-icons">
+        <a href="https://www.instagram.com/rotaractsrcas/" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>
+        </a>
+        <a href="https://linkedin.com/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        </a>
+        <a href="https://x.com/" target="_blank" rel="noopener" aria-label="X">
+          <svg viewBox="0 0 24 24"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.78L17.75 3zm-1.08 16.18h1.7L7.4 4.73H5.58l11.09 14.45z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <span class="eyebrow" style="margin-bottom:0.4rem; display:block;">Meet us</span>
+      <!-- CONTENT: meeting day/time and location -->
+      <div class="contact-line">Thursdays, 6:30 PM</div>
+      <div class="contact-line">Sri Ramakrishna College of Arts &amp; Science</div>
+    </div>
+  </div>
+  <p class="foot-bottom">© 2026 Rotaract Club of SRCAS. Service Above Self.</p>
+</footer>
+
+<!-- ================================================================
+     POP-UP MODALS (appear when certain buttons are clicked)
+     - #modal-generic is reused for BOTH team-member and event pop-ups
+       (its content is filled in by JavaScript from the "team" and
+       "events" lists — nothing to edit here)
+     - #about-modal is the "Explore More About Us" pop-up
+     - #history-modal is the "Learn Meaning & History" pop-up
+     - #join-modal is the membership form pop-up
+================================================================= -->
+<div class="modal-overlay" id="modal-generic">
+  <div class="modal-box" id="modal-generic-content"></div>
+</div>
+
+<!-- "Explore More About Us" pop-up -->
+<div class="modal-overlay" id="about-modal">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeModal('about-modal')">✕</div>
+    <!-- PIC: photo shown inside the "About Us" pop-up -->
+    <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=600&q=60" alt="Club story">
+    <h3>Our Story, in Full</h3>
+    <!-- CONTENT: the longer About Us story -->
+    <p style="margin-top:0.8rem;">What started as a handful of college friends volunteering on weekends grew into a chartered club with its own board, budget, and calendar of projects. We work across four focus areas — health, education, environment, and community development — and we run on the same principle every year: identify a real gap, then close it, together. New members don't wait for seniority to lead something; the newest inductee can chair a project in their very first term.</p>
+  </div>
+</div>
+
+<!-- "Learn Meaning & History" pop-up (the LONG version) -->
+<div class="modal-overlay" id="history-modal">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeModal('history-modal')">✕</div>
+    <h3>Rotaract: Meaning &amp; History</h3>
+    <!-- CONTENT: full meaning paragraph -->
+    <p style="margin-top:0.8rem;"><b style="color:var(--lilac)">Meaning:</b> "Rotaract" blends Rotary and Interact, signalling a club for young adults sponsored by a local Rotary club, but run entirely by its own members.</p>
+    <!-- CONTENT: full history paragraph -->
+    <p style="margin-top:0.8rem;"><b style="color:var(--lilac)">History:</b>Our club was instituted in our college premises by the initiative of our honorable Principal and Secretary, Dr. V.Sengodan. Our club has the privilege of being the 1s club in the history of Rotaraction in the RI District 3200, of being installed by the Rotary Governor. This club was charted on October 6, 2006. Our first President was Rtr. M.Karunakaran, followed by Rtr. Murali Krishna, who led the club for the second year. Our club has won many individual awards at district fellowship, group III forum and all other events. We organized several events for the welfare of the society and the members of the club. We look forward in continuing our good show in the future also.</p>
+  </div>
+</div>
+
+<div class="modal-overlay" id="join-modal">
+  <div class="modal-box">
+    <div class="modal-close" onclick="closeModal('join-modal')">✕</div>
+    <h3>Membership Interest Form</h3>
+    <form id="join-form" onsubmit="return handleForm(event,'join')" style="margin-top:1.2rem;">
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" required>
+      </div>
+      <div class="field">
+        <label>Email ID</label>
+        <input type="email" required>
+      </div>
+      <div class="field">
+        <label>Phone Number</label>
+        <input type="tel" required>
+      </div>
+      <div class="field">
+        <label>Why do you want to join?</label>
+        <textarea placeholder="A line or two is plenty"></textarea>
+      </div>
+      <button type="submit" class="btn btn-solid">Submit Interest</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Mobile hamburger menu
+  function toggleNav(){ document.getElementById('nav-links').classList.toggle('open'); }
+  document.querySelectorAll('#nav-links a').forEach(a=>{
+    a.addEventListener('click', ()=> document.getElementById('nav-links').classList.remove('open'));
+  });
+
+  // ================================================================
+  // ALL THE "REAL" CONTENT LIVES HERE. Edit the text/links below —
+  // you do NOT need to touch the HTML above for team members, events,
+  // or FAQs; this JS builds those sections automatically.
+  // ================================================================
+
+  // Small reusable social icon markup (used on team posters)
+  const igIcon = `<svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 2 .25 2.5.42a5 5 0 011.8 1.16 5 5 0 011.16 1.8c.17.5.36 1.3.42 2.5.06 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 2-.42 2.5a5 5 0 01-1.16 1.8 5 5 0 01-1.8 1.16c-.5.17-1.3.36-2.5.42-1.3.06-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-2-.25-2.5-.42a5 5 0 01-1.8-1.16 5 5 0 01-1.16-1.8c-.17-.5-.36-1.3-.42-2.5C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-2 .42-2.5a5 5 0 011.16-1.8 5 5 0 011.8-1.16c.5-.17 1.3-.36 2.5-.42C8.4 2.2 8.8 2.2 12 2.2zm0 3.05a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zm0 11.13a4.38 4.38 0 110-8.76 4.38 4.38 0 010 8.76zm7-11.4a1.58 1.58 0 11-3.15 0 1.58 1.58 0 013.15 0z"/></svg>`;
+  const liIcon = `<svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.03-1.85-3.03-1.86 0-2.15 1.45-2.15 2.94v5.66H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>`;
+
+  // 👉 TEAM MEMBERS — one { } block per person.
+  //    img  = PIC (member's photo)
+  //    name, role, bio = CONTENT
+  //    instagram, linkedin = real profile links (icons shown on the poster)
+  //    Add a new member by copying a whole line and editing it;
+  //    remove one by deleting its line (keep the commas correct).
+  const team = [
+    {name:"Rtr. Mohan Prabhu", role:"President", img:"poster/President.jpg", bio:"We are proud to introduce Rtr. Mohan Prabhu, our President for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his vision, dedication, and leadership, we look forward to a year filled with meaningful initiatives, teamwork, and impactful service. 🌟 Together, let’s make this journey memorable and create a lasting difference. 🚀\nWith RESURGENCE,\nTeam SRCAS ❤️", instagram:"https://instagram.com/", linkedin:"https://linkedin.com/"},
+    {name:"Rtr. Srihariharan", role:"Vice President", img:"poster/Vice-President.jpg", bio:"We are proud to introduce Rtr. Srihariharan, our Vice President for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith his commitment, leadership, and enthusiasm, he will play an important role in supporting the team and turning ideas into meaningful action. 🌟\nTogether, we look forward to a successful and impactful year ahead. 🚀✨\nWith RESURGENCE,\nTeam SRCAS ❤️", instagram:"https://instagram.com/", linkedin:"https://linkedin.com/"},
+    {name:"Rtr. Rithika", role:"Secretary Administration", img:"poster/Secretary-Administration.jpg", bio:"We are proud to introduce Rtr. Rithika , our Secretary – Administration for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her dedication, responsibility, and commitment, we look forward to smooth coordination, effective teamwork, and a successful year ahead. 🌟 Together, let’s lead with purpose and make every initiative count. 🚀\nWith RESURGENCE,\nTeam SRCAS ❤️", instagram:"https://instagram.com/", linkedin:"https://linkedin.com/"},
+    {name:"Rtr. Shrinidhi", role:"Secretary Communication", img:"poster/Secretary-Communication.jpg", bio:"We are proud to introduce Rtr. Shrinidhi, our Secretary – Communication for the Rotaract Year 2026–27 of the Rotaract Club of Sri Ramakrishna College of Arts and Science. 🤝\nWith her creativity, dedication, and communication skills, we look forward to sharing our initiatives, connecting with our members, and making every moment count. 🌟 Together, let’s communicate, connect, and create a greater impact throughout the year. 🚀\nWith RESURGENCE,\nTeam SRCAS ❤️", instagram:"https://instagram.com/", linkedin:"https://linkedin.com/"}
+  ];
+
+  // 👉 RECENT & UPCOMING EVENTS — one { } block per event/poster.
+  //    img      = PIC (event poster)
+  //    groupImg = PIC (group photo from that specific event, shown
+  //               when its poster is tapped)
+  //    status   = "upcoming" or "recent" (controls the little badge)
+  //    name, date, desc = CONTENT
+  //    TO ADD A NEW POSTER: copy one whole {name: ... } block below
+  //    (from its opening { to its closing }), paste it as a new
+  //    entry, edit the fields, and add a comma after the block above
+  //    it. TO REMOVE ONE: delete its whole block.
+  const events = [
+    {name:"Serve and Savor — Celebrating Charter Day", date:"9 October 2026", time:"4:30 PM – 6:00 PM", venue:"High For This", status:"recent",
+     img:"events/serve-and-savor.jpg",
+     desc:"Good Food · Good People · Great Moments. Members came together over coffee and dessert to celebrate the club's Charter Day — because Rotaract builds friendships. Event Chair: Rtr. Manoj · Event Secretary: Rtr. Nikhita · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Special Meeting — Club Officials Board Meeting", date:"30 September 2026", time:"1:30 PM", venue:"SRCAS", status:"recent",
+     img:"events/special-meeting.jpg",
+     desc:"Together We Discuss. Together We Decide. Together We Grow. A special board meeting of the club officials to review progress and plan the road ahead. Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"World Tourism Day", date:"27 September 2026", time:"4:00 PM – 5:30 PM", venue:"Semmozhi Poonga, Coimbatore", status:"recent",
+     img:"events/world-tourism-day.jpg",
+     desc:"Explore · Appreciate · Preserve. A walk towards a greener tomorrow — members visited Semmozhi Poonga to explore its natural beauty and biodiversity. Event Chair: Rtr. Thamizhvanan · Event Secretary: Rtr. Dharsan · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Treasure Hunt", date:"25 September 2026", time:"2:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/treasure-hunt.jpg",
+     desc:"Find · Solve · Unlock · Together. A thrilling adventure where participants followed clues, solved puzzles, and uncovered hidden secrets to find the ultimate treasure — teamwork, creativity, and problem-solving in a race against time. Event Chair: Rtr. Karthika · Event Secretary: Rtr. Nitesh · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Fun Race", date:"19 September 2026", time:"4:00 PM", venue:"Race Course, Coimbatore", status:"recent",
+     img:"events/fun-race.jpg",
+     desc:"Walk · Jog · Bond · Together. Run for friendship, stronger together — a relaxed evening walk-and-jog around Race Course. Good people, great miles. Event Chair: Rtr. Negarigaa · Event Secretary: Rtr. Ashwathi · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Beyond the Burnout", date:"19 September 2026", time:"10:30 AM – 12:30 PM", venue:"SRCAS Conference Hall 3", status:"recent",
+     img:"events/beyond-the-burnout.jpg",
+     desc:"Overcome personal stress, learn practical coping tools, and build long-term mental resilience. A session led by Rtr. Hamna A A Wakil — you are more than what you're going through. Event Chair: Rtr. Gugan · Event Secretary: Rtr. Madhumitha · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Safe Rise — Painting Speed Breakers (Edition 2)", date:"10 September 2026", time:"11:00 PM", venue:"In and around Coimbatore", status:"recent",
+     img:"events/safe-rise-edition-2.jpg",
+     desc:"Safer Roads, Brighter Tomorrows. The second edition of Safe Rise — a night drive painting faded speed breakers so they stay visible to riders and drivers. A safer Coimbatore begins with us. Event Chair: Rtr. Gugan · Event Secretary: Rtr. Hashish · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Heros at Dark", date:"9 September 2026", time:"11:00 PM", venue:"In and around Coimbatore", status:"recent",
+     img:"events/heros-at-dark.jpg",
+     desc:"A cup of care, a brighter night. Members served tea to security staff and working people on night shifts — same people, different hours, same respect. Event Chair: Rtr. Sai Pranesh · Event Secretary: Rtr. Hashish Laa · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Reflective Stickers", date:"3 September 2026", time:"10:00 AM", venue:"In and around Coimbatore", status:"recent",
+     img:"events/reflective-stickers.jpg",
+     desc:"Small Sticker. Big Safety. Members fixed reflective stickers on two-wheelers to make riders visible at night, under the District's ONE Priority Projects. Stick today. Ride safe. Save lives. Event Chair: Rtr. Madhumitha · Event Secretary: Rtr. Ashwathi · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Tax Decoded", date:"31 August 2026", time:"2:00 PM onwards", venue:"B203, SRCAS", status:"recent",
+     img:"events/tax-decoded.jpg",
+     desc:"Understand Today. Empower Tomorrow. A practical session on the basics of taxation, led by trainer Dr. M. Devipriya. Event Chair: Rtr. Gugan · Event Secretary: Rtr. Athulya · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Icecream Stories", date:"25 August 2026", time:"2:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/icecream-stories.jpg",
+     desc:"Good People. Great Conversations. Sweet Moments. An afternoon of ice-cream and easy conversation — scoop, share, smile, and leave with a new story. Event Chair: Rtr. Amirtha · Event Secretary: Rtr. Sushimitha · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Onam", date:"24 August 2026", time:"3:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/onam.jpg",
+     desc:"One Culture. One Family. One Celebration. \"ഒന്നായ് നമുക്ക്, ഒരുമയോടെ മുന്നേറാം\" — Together as one, let's move forward united. A celebration of the harvest of happiness, the colour of tradition, and the joy of togetherness. Event Chair: Rtr. Ashwathi · Event Secretary: Rtr. Madhumitha · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Punitham", date:"24 August 2026", time:"9:00 AM", venue:"Marudhamalai", status:"recent",
+     img:"events/punitham.jpg",
+     desc:"A morning visit to the Marudhamalai hill temple for reflection, gratitude, and togetherness away from campus. Event Chair: Rtr. Akash · Event Secretary: Rtr. Negarigaa · Faculty Coordinators: Dr. M. Karthika & Mr. L.R. Siva Raman."},
+    {name:"Project Safe Rise", date:"22 August 2026", time:"11:00 PM", venue:"To be announced", status:"recent",
+     img:"events/project-safe-rise.jpg",
+     desc:"Safer Streets. Stronger Tomorrows. A night-time road-marking drive to repaint faded kerbs and lane lines around campus, run under the District's ONE Priority Projects and the RISE of Resurgence theme for 2026-27. Faculty Co-ordinators: Dr. M. Karthika & Mr. L. R. Siva Raman."},
+    {name:"Potluck", date:"20 August 2026", time:"1:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/potluck.jpg",
+     desc:"Good Food. Great People. Better Together. Members brought their favourite dish to share for an afternoon of food and fellowship. Event Chair: Rtr. Nikhita · Event Secretary: Rtr. Manoj."},
+    {name:"Vista — Board Meeting", date:"18 August 2026", time:"2:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/vista-board-meeting.jpg",
+     desc:"Align · Plan · Lead. The club board came together to align on goals, plan upcoming projects, and set the leadership direction for the term ahead."},
+    {name:"Reawaken — 34th Installation Ceremony", date:"7 August 2026", time:"9:00 AM", venue:"Conference Hall 1, SRCAS", status:"recent",
+     img:"events/reawaken.jpg",
+     desc:"The Installation of Rtr. Mohan Prabhu as President 2026-27, along with the Board of Directors 2026-27. \"Leadership is not inherited; it is earned through service, vision, and commitment.\" Chief Guest: Rtn. R.S. Maruti (District Governor) · Guest of Honour: Dr. B.L. Shivakumar (Principal, SRCAS) · Special Invitees: Dr. M. Mandhirasalam (Librarian & Dean ARRA, CIT College) and Rtn. J. Sridhar (Coimbatore Midtown) · District Rotaract Representative: Rtr. MPHF Vijay Vignesh V K."},
+    {name:"Roots of Tomorrow — Seed Ball Plantation Drive", date:"3 August 2026", time:"2:00 PM", venue:"SRCAS", status:"recent",
+     img:"events/roots-of-tomorrow.jpg",
+     desc:"Small seeds can create mighty forests. Members spread seed balls across campus to restore green spaces, encourage biodiversity, and leave a lasting environmental impact. Event Chair: Rtr. Nikhita · Event Secretary: Rtr. Manoj."},
+    {name:"Breaking Bread", date:"16 July 2026", time:"2:00 PM", venue:"Persian Qureshi Mandi", status:"recent",
+     img:"events/breaking-bread.jpg",
+     desc:"A themed get-together where members broke bread — quite literally — over a shared meal at Persian Qureshi Mandi. Good food, good company, and a lot of inside jokes."}
+  ];
+
+  // 👉 FAQ — one { } block per question. No photos here, just CONTENT.
+  const faqs = [
+    {q:"Do I need to already be a Rotary member to join?", a:"No — Rotaract clubs are sponsored by a local Rotary club, but membership is entirely separate. Anyone in the eligible age range can apply directly."},
+    {q:"Is there a membership fee?", a:"Yes, a modest annual fee that covers club operations and district affiliation. Full details are shared once your application is reviewed."},
+    {q:"How much time does it actually take?", a:"One weekly meeting plus whichever project committees you choose to join. Most members give a few hours a week."},
+    {q:"Can I join if I'm not a student?", a:"Yes. Membership is open to young professionals as well as students, within the club's set age range."}
+  ];
+
+  // ---------- RENDER ----------
+  // Podium layout: team[0] goes to the top-centre tier, team[1] &
+  // team[2] go to the middle row, team[3] & team[4] go to the bottom row.
+  const podiumTiers = [
+    document.getElementById('podium-tier-1'),
+    document.getElementById('podium-tier-2'),
+    document.getElementById('podium-tier-2'),
+    document.getElementById('podium-tier-3'),
+    document.getElementById('podium-tier-3')
+  ];
+  team.forEach((m,i)=>{
+    const card = document.createElement('div');
+    card.className='member-card';
+    card.onclick = ()=> showMemberModal(i);
+    const crown = i === 0
+      ? `<div class="crown-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 8l4 3 5-6 5 6 4-3-2 11H5L3 8zm2.7 8.5h12.6l.9-5-2.8 2.1L12 8l-4.4 5.6-2.8-2.1.9 5z"/></svg></div>`
+      : '';
+    card.innerHTML = `${crown}<div class="member-photo-wrap">
+        <img src="${m.img}" alt="${m.name}">
+        <div class="member-label"><b>${m.name}</b><small>${m.role}</small></div>
+      </div>`;
+    (podiumTiers[i] || podiumTiers[podiumTiers.length - 1]).appendChild(card);
+  });
+
+  const eventsGrid = document.getElementById('events-grid');
+  // Home page shows only the latest 5 posters — "View More" opens events.html
+  events.slice(0, 5).forEach((e,i)=>{
+    const card = document.createElement('div');
+    card.className='event-card';
+    card.onclick = ()=> showEventModal(i);
+    card.innerHTML = `<span class="badge ${e.status}">${e.status === 'upcoming' ? 'Upcoming' : 'Recent'}</span>
+      <img src="${e.img}" alt="${e.name}">
+      <div class="event-info"><b>${e.name}</b><br><small>${e.date}</small></div>`;
+    eventsGrid.appendChild(card);
+  });
+
+  const faqList = document.getElementById('faq-list');
+  faqs.forEach((f,i)=>{
+    const item = document.createElement('div');
+    item.className='faq-item';
+    item.innerHTML = `<div class="faq-q" onclick="toggleFaq(${i})">${f.q}<span class="plus">+</span></div>
+      <div class="faq-a">${f.a}</div>`;
+    faqList.appendChild(item);
+  });
+
+  function toggleFaq(i){
+    const item = faqList.children[i];
+    const wasOpen = item.classList.contains('open');
+    [...faqList.children].forEach(c=>c.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  }
+
+  function showMemberModal(i){
+    const m = team[i];
+    const bio = m.bio ? `<p style="color:#c6b9e6; line-height:1.7; margin-top:1rem; text-align:left; white-space:pre-line;">${m.bio}</p>` : '';
+    document.getElementById('modal-generic-content').innerHTML = `
+      <div class="modal-close" onclick="closeModal('modal-generic')">✕</div>
+      <img src="${m.img}" alt="${m.name}">
+      <h3>${m.name}</h3>
+      <div class="role">${m.role}</div>
+      ${bio}`;
+    openModal('modal-generic');
+  }
+
+  function showEventModal(i){
+    const e = events[i];
+    const groupSection = (e.groupImg && e.groupImg !== e.img) ? `
+      <div class="group-label">Photos from this event</div>
+      <img src="${e.groupImg}" alt="${e.name} group photo">` : '';
+    const detailsSection = (e.time || e.venue) ? `
+      <div class="event-detail-rows">
+        ${e.time ? `<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>${e.time}</div>` : ''}
+        ${e.venue ? `<div class="detail-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.5-7-11a7 7 0 0114 0c0 4.5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>${e.venue}</div>` : ''}
+      </div>` : '';
+    document.getElementById('modal-generic-content').innerHTML = `
+      <div class="modal-close" onclick="closeModal('modal-generic')">✕</div>
+      <img class="event-poster-img" src="${e.img}" alt="${e.name}">
+      <h3>${e.name}</h3>
+      <div class="role">${e.date} · ${e.status === 'upcoming' ? 'Upcoming' : 'Recent'}</div>
+      <p>${e.desc}</p>
+      ${detailsSection}
+      ${groupSection}`;
+    openModal('modal-generic');
+  }
+
+  function openModal(id){ document.getElementById(id).classList.add('active'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+  document.querySelectorAll('.modal-overlay').forEach(ov=>{
+    ov.addEventListener('click', e=>{ if(e.target===ov) ov.classList.remove('active'); });
+  });
+
+  const startYear = 1975;
+
+
+  function handleForm(e, kind){
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = kind==='join' ? "Thanks — we'll be in touch!" : "Sent — thank you!";
+    btn.style.opacity = 0.75;
+    form.querySelectorAll('input, textarea').forEach(el=> el.disabled = true);
+    return false;
+  }
+</script>
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>

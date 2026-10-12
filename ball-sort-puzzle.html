@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="page-transition.js"></script>
+<title>Sort & Steep — a ball sort puzzle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#1c130d;
+    --bg-2:#2c1d13;
+    --panel:#3a281c;
+    --panel-edge: rgba(242,230,207,0.10);
+    --brass:#cf9d3f;
+    --brass-light:#e9c876;
+    --brass-dark:#8a6423;
+    --ink:#140d08;
+    --parchment:#f2e6cf;
+    --parchment-dim:#c9b898;
+    --glass-border: rgba(242,230,207,0.24);
+    --glass-fill: rgba(255,255,255,0.03);
+    --shadow: rgba(0,0,0,0.55);
+    --success:#6e9a5b;
+    --danger:#b5504a;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0; padding:0;
+    min-height:100%;
+    background:
+      radial-gradient(ellipse at 20% -10%, rgba(207,157,63,0.08), transparent 55%),
+      radial-gradient(ellipse at 100% 110%, rgba(207,157,63,0.06), transparent 50%),
+      linear-gradient(160deg, var(--bg-2), var(--bg-1) 60%);
+    color: var(--parchment);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .app{
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 64px 20px 48px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    width:100%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    border-bottom: 1px solid var(--panel-edge);
+    padding-bottom:18px;
+    margin-bottom: 22px;
+  }
+
+  .title-block h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight:700;
+    font-size: clamp(28px, 5vw, 42px);
+    margin:0 0 4px;
+    letter-spacing: 0.01em;
+    color: var(--parchment);
+    text-shadow: 0 2px 0 rgba(0,0,0,0.3);
+  }
+  .title-block p{
+    margin:0;
+    font-size:12.5px;
+    letter-spacing:0.06em;
+    text-transform: uppercase;
+    color: var(--parchment-dim);
+  }
+
+  .stats{
+    display:flex;
+    gap:18px;
+    font-size:12.5px;
+    letter-spacing:0.04em;
+  }
+  .stat{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    min-width:64px;
+    padding:6px 10px;
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius:6px;
+  }
+  .stat span.label{ color:var(--parchment-dim); font-size:10px; text-transform:uppercase; letter-spacing:0.08em; }
+  .stat span.value{ color:var(--brass-light); font-size:16px; font-weight:600; margin-top:2px; }
+
+  /* ---------- controls ---------- */
+  .controls{
+    width:100%;
+    display:flex;
+    flex-wrap:wrap;
+    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: 30px;
+  }
+
+  .difficulty-group{ display:flex; gap:8px; }
+  .diff-btn{
+    background: transparent;
+    color: var(--parchment-dim);
+    border: 1px solid var(--panel-edge);
+    box-shadow:none;
+    padding:8px 14px;
+    border-radius:5px;
+  }
+  .diff-btn:hover{ filter:none; border-color: var(--brass); color: var(--parchment); }
+  .diff-btn.active{
+    background: linear-gradient(180deg, var(--brass-light), var(--brass) 70%, var(--brass-dark));
+    color: var(--ink);
+    border-color: transparent;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.35);
+  }
+
+  .stepper.fixed .icon-btn{ visibility:hidden; }
+  .stepper.fixed .count{ color: var(--parchment-dim); }
+  .stepper.fixed::after{
+    content: '(fixed)';
+    font-size:10px;
+    color: var(--parchment-dim);
+    text-transform:none;
+    letter-spacing:0;
+  }
+
+  .stepper{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:12px;
+    color:var(--parchment-dim);
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+  }
+  .stepper .count{
+    color:var(--brass-light);
+    font-size:16px;
+    min-width: 18px;
+    text-align:center;
+  }
+
+  button{
+    font-family:'IBM Plex Mono', monospace;
+    cursor:pointer;
+    border:none;
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--brass-light), var(--brass) 70%, var(--brass-dark));
+    border-radius:5px;
+    padding:9px 16px;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.35);
+    transition: transform 0.08s ease, filter 0.15s ease;
+  }
+  button:hover{ filter:brightness(1.08); }
+  button:active{ transform: translateY(1px); }
+  button:disabled{ opacity:0.35; cursor:not-allowed; filter:none; }
+  button:focus-visible{ outline: 2px solid var(--parchment); outline-offset:2px; }
+
+  .icon-btn{
+    background: var(--panel);
+    color: var(--parchment);
+    border: 1px solid var(--panel-edge);
+    box-shadow:none;
+    width:30px; height:30px;
+    border-radius:50%;
+    padding:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:15px;
+  }
+  .icon-btn:hover{ filter:none; background:#443123; }
+
+  #siteBackBtn{
+    position:fixed; top:16px; left:16px; z-index:20;
+    display:flex; align-items:center; gap:6px;
+    background: var(--panel);
+    color: var(--parchment);
+    border: 1px solid var(--panel-edge);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:600;
+    text-decoration:none;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+  }
+  #siteBackBtn:hover{ border-color: var(--brass); color: var(--brass-light); }
+  #siteBackBtn svg{ width:14px; height:14px; }
+
+  #backBtn{
+    background: transparent;
+    color: var(--parchment-dim);
+    border: 1px solid var(--panel-edge);
+    box-shadow:none;
+  }
+  #backBtn:hover{ filter:none; border-color: var(--brass); color: var(--parchment); }
+
+  .action-group{ display:flex; gap:10px; flex-wrap:wrap; }
+
+  /* ---------- board ---------- */
+  .board{
+    width:100%;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap: 26px 22px;
+    padding: 26px 18px 10px;
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius:10px;
+    box-shadow: inset 0 2px 14px rgba(0,0,0,0.35);
+  }
+
+  .tube-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+
+  .tube-tag{
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    color: var(--ink);
+    background: linear-gradient(180deg, var(--brass-light), var(--brass));
+    border-radius:3px;
+    padding:1px 7px;
+    margin-bottom:5px;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+  }
+
+  .tube{
+    --tube-w: 60px;
+    --ball: 44px;
+    width: var(--tube-w);
+    padding: 6px;
+    border: 2px solid var(--glass-border);
+    border-top: 2px solid rgba(242,230,207,0.4);
+    border-radius: 6px 6px 30px 30px;
+    background: var(--glass-fill);
+    display:flex;
+    flex-direction: column-reverse;
+    gap:5px;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.35), inset 6px 0 10px -6px rgba(255,255,255,0.06);
+    transform-origin: bottom center;
+    transition: transform 0.24s cubic-bezier(.4,.2,.2,1), box-shadow 0.2s ease;
+    cursor:pointer;
+  }
+
+  .tube:focus-visible{ outline: 2px solid var(--brass-light); outline-offset:3px; }
+
+  .tube.selected{
+    transform: translateY(-16px);
+    box-shadow: 0 0 0 2px var(--brass-light), 0 10px 18px rgba(0,0,0,0.4);
+  }
+  .tube.pour-left{ transform: translateY(-16px) rotate(-26deg); }
+  .tube.pour-right{ transform: translateY(-16px) rotate(26deg); }
+
+  .tube.shake{ animation: shake 0.32s ease; }
+  @keyframes shake{
+    0%,100%{ transform: translateX(0); }
+    25%{ transform: translateX(-5px); }
+    75%{ transform: translateX(5px); }
+  }
+
+  .ball{
+    width: var(--ball);
+    height: var(--ball);
+    border-radius:50%;
+    flex-shrink:0;
+    box-shadow: inset -4px -5px 8px rgba(0,0,0,0.35), inset 3px 4px 5px rgba(255,255,255,0.35), 0 2px 3px rgba(0,0,0,0.3);
+  }
+  .ball.drop{ animation: drop-in 0.28s ease; }
+  @keyframes drop-in{
+    0%{ transform: translateY(-22px) scale(0.9); opacity:0.4; }
+    60%{ transform: translateY(3px) scale(1.03); opacity:1; }
+    100%{ transform: translateY(0) scale(1); }
+  }
+
+  .tube-slot{
+    width: var(--ball);
+    height: var(--ball);
+  }
+
+  /* ---------- footer note ---------- */
+  .hint{
+    margin-top:22px;
+    font-size:11.5px;
+    color: var(--parchment-dim);
+    text-align:center;
+    letter-spacing:0.02em;
+    max-width:520px;
+  }
+
+  /* ---------- win modal ---------- */
+  .overlay{
+    position:fixed; inset:0;
+    background: rgba(10,6,3,0.72);
+    display:flex; align-items:center; justify-content:center;
+    z-index:10;
+    opacity:0; pointer-events:none;
+    transition: opacity 0.25s ease;
+  }
+  .overlay.show{ opacity:1; pointer-events:auto; }
+
+  .modal{
+    background: linear-gradient(180deg, #3a281c, #2c1d13);
+    border: 1px solid var(--brass-dark);
+    border-radius:10px;
+    padding: 32px 34px;
+    text-align:center;
+    max-width:340px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    transform: translateY(10px);
+    transition: transform 0.25s ease;
+  }
+  .overlay.show .modal{ transform: translateY(0); }
+
+  .modal h2{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:26px;
+    margin: 0 0 6px;
+    color: var(--brass-light);
+  }
+  .modal p{ margin:0 0 10px; font-size:12.5px; color:var(--parchment-dim); }
+  .stars{
+    font-size:22px;
+    letter-spacing:6px;
+    color: var(--brass-light);
+    margin-bottom:16px;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+  }
+  .stars .dim{ color: rgba(242,230,207,0.18); }
+
+  .start-modal{ max-width: 380px; }
+  .start-options{
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+    margin-top: 6px;
+  }
+  .start-diff-btn{
+    background: var(--panel-2, #2a1c12);
+    color: var(--parchment);
+    border: 1px solid var(--panel-edge);
+    box-shadow:none;
+    border-radius:7px;
+    padding: 12px 16px;
+    display:flex;
+    flex-direction: column;
+    align-items:flex-start;
+    gap:2px;
+    text-align:left;
+  }
+  .start-diff-btn:hover{
+    filter:none;
+    border-color: var(--brass);
+    background: #35251a;
+  }
+  .start-diff-btn .diff-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:17px;
+    color: var(--brass-light);
+    text-transform:none;
+    letter-spacing:0;
+  }
+  .start-diff-btn .diff-desc{
+    font-size:11px;
+    color: var(--parchment-dim);
+    text-transform:none;
+    letter-spacing:0.02em;
+  }
+  .modal .modal-stats{
+    display:flex; justify-content:center; gap:24px; margin-bottom:22px;
+  }
+  .modal .modal-stats div{ display:flex; flex-direction:column; }
+  .modal .modal-stats span.label{ font-size:10px; text-transform:uppercase; letter-spacing:0.08em; color:var(--parchment-dim); }
+  .modal .modal-stats span.value{ font-size:20px; color:var(--brass-light); font-weight:600; }
+
+  @media (max-width: 520px){
+    .tube{ --tube-w:46px; --ball:34px; }
+    .board{ gap:20px 14px; padding:20px 12px; }
+    header{ align-items:flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+</style>
+<link rel="stylesheet" href="gear-cursor.css">
+</head>
+<body>
+
+<a href="games.html" id="siteBackBtn">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+  Back
+</a>
+
+<div class="app">
+  <header>
+    <div class="title-block">
+      <h1>Sort &amp; Steep</h1>
+      <p>a tidy little chemistry of colors</p>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <span class="label">Moves</span>
+        <span class="value" id="movesVal">0</span>
+      </div>
+      <div class="stat">
+        <span class="label">Time</span>
+        <span class="value" id="timeVal">00:00</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="controls">
+    <div class="difficulty-group" role="group" aria-label="Difficulty">
+      <button class="diff-btn" data-diff="easy">Easy</button>
+      <button class="diff-btn" data-diff="medium">Medium</button>
+      <button class="diff-btn" data-diff="hard">Hard</button>
+    </div>
+    <div class="stepper">
+      <span id="stepperLabel">Colors</span>
+      <button class="icon-btn" id="decBtn" aria-label="Fewer colors">–</button>
+      <span class="count" id="colorCount">4</span>
+      <button class="icon-btn" id="incBtn" aria-label="More colors">+</button>
+    </div>
+    <div class="action-group">
+      <button id="backBtn">Change Difficulty</button>
+      <button id="undoBtn">Undo</button>
+      <button id="restartBtn">Restart</button>
+      <button id="newBtn">New Puzzle</button>
+    </div>
+  </div>
+
+  <div class="board" id="board" role="group" aria-label="Puzzle tubes"></div>
+
+  <p class="hint">Click a tube to lift it, then click another tube to pour matching colors into it. Sort every color into its own tube to finish.</p>
+</div>
+
+<div class="overlay show" id="startOverlay">
+  <div class="modal start-modal">
+    <h2>Sort &amp; Steep</h2>
+    <p>Pick a difficulty to begin.</p>
+    <div class="start-options">
+      <button class="start-diff-btn" data-diff="easy">
+        <span class="diff-name">Easy</span>
+        <span class="diff-desc">4 colors · adjustable</span>
+      </button>
+      <button class="start-diff-btn" data-diff="medium">
+        <span class="diff-name">Medium</span>
+        <span class="diff-desc">6 colors · adjustable</span>
+      </button>
+      <button class="start-diff-btn" data-diff="hard">
+        <span class="diff-name">Hard</span>
+        <span class="diff-desc">9 colors · fixed</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2>Solved!</h2>
+    <p>Every color found its own tube.</p>
+    <div class="stars" id="stars">★★★</div>
+    <div class="modal-stats">
+      <div><span class="label">Moves</span><span class="value" id="finalMoves">0</span></div>
+      <div><span class="label">Time</span><span class="value" id="finalTime">00:00</span></div>
+      <div><span class="label">Score</span><span class="value" id="finalScore">0</span></div>
+    </div>
+    <p id="leaderboardNote" style="font-size:11.5px; color:var(--parchment-dim); margin:-6px 0 16px;"></p>
+    <button id="playAgainBtn">Play Again</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const PALETTE = [
+    '#c1443c', '#d98a3d', '#e0c04c', '#5a8c4e', '#3f8f82',
+    '#3d6b9e', '#5b5a9e', '#8a4f9e', '#c15f8a', '#8a5a3c'
+  ];
+  const CAPACITY = 4;
+  const LETTERS = 'ABCDEFGHIJKL';
+  const DIFFICULTY = {
+    easy:   { min: 3, max: 5, default: 4 },
+    medium: { min: 6, max: 8, default: 6 },
+    hard:   { min: 9, max: 9, default: 9 } // fixed — no tube-count choice on hard
+  };
+
+  let difficulty = 'easy';
+  let colorsCount = DIFFICULTY.easy.default;
+  let tubes = [];
+  let initialTubes = [];
+  let selected = null;
+  let moves = 0;
+  let history = [];
+  let solved = false;
+  let timerSeconds = 0;
+  let timerInterval = null;
+  let justMoved = null; // {to, amount}
+  let shakeIndex = null;
+
+  const boardEl = document.getElementById('board');
+  const movesEl = document.getElementById('movesVal');
+  const timeEl = document.getElementById('timeVal');
+  const colorCountEl = document.getElementById('colorCount');
+  const decBtn = document.getElementById('decBtn');
+  const incBtn = document.getElementById('incBtn');
+  const stepperEl = document.querySelector('.stepper');
+  const diffButtons = document.querySelectorAll('.diff-btn');
+  const overlayEl = document.getElementById('overlay');
+  const startOverlayEl = document.getElementById('startOverlay');
+  const startDiffButtons = document.querySelectorAll('.start-diff-btn');
+  const finalMovesEl = document.getElementById('finalMoves');
+  const finalTimeEl = document.getElementById('finalTime');
+  const finalScoreEl = document.getElementById('finalScore');
+  const starsEl = document.getElementById('stars');
+
+  function cloneTubes(t){ return t.map(tube => tube.slice()); }
+
+  function formatTime(s){
+    const m = Math.floor(s/60).toString().padStart(2,'0');
+    const sec = (s%60).toString().padStart(2,'0');
+    return m+':'+sec;
+  }
+
+  function topRun(tube){
+    if (tube.length === 0) return { color: null, count: 0 };
+    const color = tube[tube.length-1];
+    let count = 0;
+    for (let i = tube.length-1; i >= 0; i--){
+      if (tube[i] === color) count++; else break;
+    }
+    return { color, count };
+  }
+
+  // Score rewards finishing quickly and in few moves, scaled to how hard
+  // the puzzle was. Beating "par" time/moves adds to the score; going over
+  // par subtracts from it — so a faster finish always scores higher than
+  // a slower one at the same difficulty.
+  function computeScore(colorsUsed, timeSeconds, movesTaken){
+    const base = 500 + colorsUsed * 150;
+    const parMoves = colorsUsed * 3;
+    const parTime = colorsUsed * 8;
+    const timeBonus = (parTime - timeSeconds) * 4;   // faster than par = positive
+    const moveBonus = (parMoves - movesTaken) * 15;  // fewer moves than par = positive
+    const raw = base + timeBonus + moveBonus;
+    return Math.max(50, Math.round(raw));
+  }
+
+  function starsForScore(score, base){
+    const ratio = score / base;
+    if (ratio >= 0.85) return 3;
+    if (ratio >= 0.55) return 2;
+    return 1;
+  }
+
+  function isSolved(t){
+    return t.every(tube => tube.length === 0 || (tube.length === CAPACITY && tube.every(c => c === tube[0])));
+  }
+
+  function generatePuzzle(){
+    let attempt;
+    do {
+      const balls = [];
+      for (let c = 0; c < colorsCount; c++){
+        for (let i = 0; i < CAPACITY; i++) balls.push(PALETTE[c]);
+      }
+      for (let i = balls.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i+1));
+        [balls[i], balls[j]] = [balls[j], balls[i]];
+      }
+      const total = colorsCount + 2;
+      attempt = Array.from({length: total}, () => []);
+      let idx = 0;
+      for (let t = 0; t < colorsCount; t++){
+        for (let i = 0; i < CAPACITY; i++) attempt[t].push(balls[idx++]);
+      }
+    } while (isSolved(attempt));
+    return attempt;
+  }
+
+  function canMove(from, to){
+    if (from === to) return false;
+    const src = tubes[from], dst = tubes[to];
+    if (src.length === 0) return false;
+    if (dst.length >= CAPACITY) return false;
+    const run = topRun(src);
+    if (dst.length === 0) return true;
+    return dst[dst.length-1] === run.color;
+  }
+
+  function moveAmount(from, to){
+    const run = topRun(tubes[from]);
+    const space = CAPACITY - tubes[to].length;
+    return Math.min(run.count, space);
+  }
+
+  function saveHistory(){
+    history.push({ tubes: cloneTubes(tubes), moves });
+    if (history.length > 200) history.shift();
+  }
+
+  function startTimer(){
+    stopTimer();
+    timerSeconds = 0;
+    timeEl.textContent = formatTime(0);
+    timerInterval = setInterval(() => {
+      timerSeconds++;
+      timeEl.textContent = formatTime(timerSeconds);
+    }, 1000);
+  }
+  function stopTimer(){
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  function newPuzzle(){
+    tubes = generatePuzzle();
+    initialTubes = cloneTubes(tubes);
+    moves = 0;
+    history = [];
+    selected = null;
+    solved = false;
+    justMoved = null;
+    overlayEl.classList.remove('show');
+    startTimer();
+    render();
+  }
+
+  function restart(){
+    tubes = cloneTubes(initialTubes);
+    moves = 0;
+    history = [];
+    selected = null;
+    solved = false;
+    justMoved = null;
+    overlayEl.classList.remove('show');
+    startTimer();
+    render();
+  }
+
+  function undo(){
+    if (history.length === 0 || solved) return;
+    const prev = history.pop();
+    tubes = prev.tubes;
+    moves = prev.moves;
+    selected = null;
+    justMoved = null;
+    render();
+  }
+
+  function performMove(from, to){
+    saveHistory();
+    const amount = moveAmount(from, to);
+    const color = topRun(tubes[from]).color;
+    const dir = to > from ? 'pour-right' : 'pour-left';
+
+    const tubeEls = boardEl.querySelectorAll('.tube');
+    const srcEl = tubeEls[from];
+    if (srcEl) srcEl.classList.add(dir);
+
+    selected = null;
+
+    setTimeout(() => {
+      for (let i = 0; i < amount; i++){
+        tubes[from].pop();
+        tubes[to].push(color);
+      }
+      moves++;
+      justMoved = { to, amount };
+      render();
+      if (isSolved(tubes)){
+        solved = true;
+        stopTimer();
+        showWin();
+      }
+    }, 220);
+  }
+
+  function showWin(){
+    const base = 500 + colorsCount * 150;
+    const score = computeScore(colorsCount, timerSeconds, moves);
+    const earnedStars = starsForScore(score, base);
+
+    finalMovesEl.textContent = moves;
+    finalTimeEl.textContent = formatTime(timerSeconds);
+    finalScoreEl.textContent = score;
+    starsEl.innerHTML = '★'.repeat(earnedStars) + '<span class="dim">' + '★'.repeat(3 - earnedStars) + '</span>';
+    overlayEl.classList.add('show');
+    syncScoreToLeaderboard(score);
+    const noteEl = document.getElementById('leaderboardNote');
+    const loggedIn = (function(){
+      try { return !!JSON.parse(localStorage.getItem('rotaract_games_current') || 'null'); }
+      catch(e){ return false; }
+    })();
+    if(loggedIn){
+      const rank = getMyLeaderboardRank();
+      noteEl.textContent = rank ? ("You're #" + rank + " on the club leaderboard") : '';
+    } else {
+      noteEl.textContent = 'Log in on the Games page to save this to the club leaderboard!';
+    }
+  }
+
+  // ============================================================
+  // SHARED CLUB LEADERBOARD SYNC
+  // Reads the same "who's logged in" info that games.html sets when a
+  // member signs up / logs in (localStorage key: rotaract_games_current),
+  // then updates that member's best Sort & Steep score in a shared
+  // localStorage key (rotaract_games_scores) that games.html reads to
+  // build its Leaderboard. If nobody is logged in, the win still shows
+  // normally, it just won't appear on the club leaderboard.
+  // ============================================================
+  function syncScoreToLeaderboard(latestScore){
+    try {
+      const current = JSON.parse(localStorage.getItem('rotaract_games_current') || 'null');
+      if(!current || !current.email) return; // no logged-in member — nothing to sync
+
+      const scores = JSON.parse(localStorage.getItem('rotaract_games_scores') || '{}');
+      const key = current.email;
+      if(!scores[key]) scores[key] = { name: current.name, games: {} };
+      scores[key].name = current.name; // keep name fresh in case it changed
+      const prevBest = scores[key].games['ball-sort'] || 0;
+      scores[key].games['ball-sort'] = Math.max(prevBest, latestScore);
+      localStorage.setItem('rotaract_games_scores', JSON.stringify(scores));
+    } catch(e){
+      // localStorage unavailable or blocked — fail silently, game still works
+    }
+  }
+
+  // Works out the logged-in player's current rank (1 = top) across the
+  // whole shared club leaderboard, right here on the win screen.
+  function getMyLeaderboardRank(){
+    try {
+      const current = JSON.parse(localStorage.getItem('rotaract_games_current') || 'null');
+      if(!current || !current.email) return null;
+      const scores = JSON.parse(localStorage.getItem('rotaract_games_scores') || '{}');
+      const ranked = Object.entries(scores)
+        .map(([email, entry]) => ({
+          email,
+          points: Object.values(entry.games || {}).reduce((sum, v) => sum + v, 0)
+        }))
+        .filter(p => p.points > 0)
+        .sort((a, b) => b.points - a.points);
+      const idx = ranked.findIndex(p => p.email === current.email);
+      return idx === -1 ? null : idx + 1;
+    } catch(e){ return null; }
+  }
+
+  function handleTubeClick(idx){
+    if (solved) return;
+    if (selected === null){
+      if (tubes[idx].length > 0){ selected = idx; render(); }
+      return;
+    }
+    if (selected === idx){ selected = null; render(); return; }
+    if (canMove(selected, idx)){
+      performMove(selected, idx);
+    } else {
+      shakeIndex = idx;
+      selected = tubes[idx].length > 0 ? idx : null;
+      render();
+      setTimeout(() => { shakeIndex = null; }, 320);
+    }
+  }
+
+  function render(){
+    boardEl.innerHTML = '';
+    tubes.forEach((tube, idx) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'tube-wrap';
+
+      const tag = document.createElement('div');
+      tag.className = 'tube-tag';
+      tag.textContent = LETTERS[idx] || (idx+1);
+      wrap.appendChild(tag);
+
+      const tubeEl = document.createElement('div');
+      tubeEl.className = 'tube';
+      tubeEl.setAttribute('role','button');
+      tubeEl.setAttribute('tabindex','0');
+      tubeEl.setAttribute('aria-label', 'Tube ' + (LETTERS[idx]||idx+1) + ', ' + tube.length + ' of ' + CAPACITY + ' filled');
+      if (idx === selected) tubeEl.classList.add('selected');
+      if (idx === shakeIndex) tubeEl.classList.add('shake');
+
+      const emptySlots = CAPACITY - tube.length;
+      for (let i = 0; i < emptySlots; i++){
+        const slot = document.createElement('div');
+        slot.className = 'tube-slot';
+        tubeEl.appendChild(slot);
+      }
+      tube.forEach((color, ballIdx) => {
+        const ball = document.createElement('div');
+        ball.className = 'ball';
+        ball.style.background =
+          'radial-gradient(circle at 32% 28%, ' + lighten(color) + ', ' + color + ' 60%, ' + darken(color) + ')';
+        if (justMoved && justMoved.to === idx && ballIdx >= tube.length - justMoved.amount){
+          ball.classList.add('drop');
+        }
+        tubeEl.appendChild(ball);
+      });
+
+      tubeEl.addEventListener('click', () => handleTubeClick(idx));
+      tubeEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); handleTubeClick(idx); }
+      });
+
+      wrap.appendChild(tubeEl);
+      boardEl.appendChild(wrap);
+    });
+
+    justMoved = null;
+    movesEl.textContent = moves;
+    document.getElementById('undoBtn').disabled = history.length === 0 || solved;
+  }
+
+  function lighten(hex){ return shade(hex, 0.35); }
+  function darken(hex){ return shade(hex, -0.35); }
+  function shade(hex, amt){
+    const num = parseInt(hex.slice(1), 16);
+    let r = (num >> 16) + Math.round(255*amt);
+    let g = ((num >> 8) & 0x00FF) + Math.round(255*amt);
+    let b = (num & 0x0000FF) + Math.round(255*amt);
+    r = Math.max(0, Math.min(255, r));
+    g = Math.max(0, Math.min(255, g));
+    b = Math.max(0, Math.min(255, b));
+    return '#' + (0x1000000 + r*0x10000 + g*0x100 + b).toString(16).slice(1);
+  }
+
+  function updateStepperUI(){
+    const cfg = DIFFICULTY[difficulty];
+    const isFixed = cfg.min === cfg.max;
+    stepperEl.classList.toggle('fixed', isFixed);
+    decBtn.disabled = isFixed || colorsCount <= cfg.min;
+    incBtn.disabled = isFixed || colorsCount >= cfg.max;
+  }
+
+  function updateDifficultyUI(){
+    diffButtons.forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.diff === difficulty);
+    });
+  }
+
+  function setDifficulty(d){
+    difficulty = d;
+    colorsCount = DIFFICULTY[d].default;
+    colorCountEl.textContent = colorsCount;
+    updateDifficultyUI();
+    updateStepperUI();
+    newPuzzle();
+  }
+
+  diffButtons.forEach(btn => {
+    btn.addEventListener('click', () => setDifficulty(btn.dataset.diff));
+  });
+
+  decBtn.addEventListener('click', () => {
+    const cfg = DIFFICULTY[difficulty];
+    if (colorsCount > cfg.min){ colorsCount--; colorCountEl.textContent = colorsCount; updateStepperUI(); newPuzzle(); }
+  });
+  incBtn.addEventListener('click', () => {
+    const cfg = DIFFICULTY[difficulty];
+    if (colorsCount < cfg.max){ colorsCount++; colorCountEl.textContent = colorsCount; updateStepperUI(); newPuzzle(); }
+  });
+  document.getElementById('backBtn').addEventListener('click', goBack);
+  document.getElementById('undoBtn').addEventListener('click', undo);
+  document.getElementById('restartBtn').addEventListener('click', restart);
+  document.getElementById('newBtn').addEventListener('click', newPuzzle);
+  document.getElementById('playAgainBtn').addEventListener('click', newPuzzle);
+
+  function goBack(){
+    stopTimer();
+    selected = null;
+    startOverlayEl.classList.add('show');
+  }
+
+  startDiffButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      startOverlayEl.classList.remove('show');
+      setDifficulty(btn.dataset.diff);
+    });
+  });
+
+  updateDifficultyUI();
+  updateStepperUI();
+})();
+</script>
+
+<script src="gear-cursor.js" defer></script>
+</body>
+</html>
